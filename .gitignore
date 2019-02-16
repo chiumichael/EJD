@@ -1,0 +1,11 @@
+#directories
+/ipynb_checkpoints
+/Notebooks
+*/build/
+*notebooks/
+*build/
+/Matlab/
+
+#filetypes
+.DS_Store
+.vscode
