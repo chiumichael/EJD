@@ -34,11 +34,8 @@ target_include_directories(
 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external
 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
 	PUBLIC "/usr/local/include/"
-	PUBLIC "/Users/chiu/code/range-v3/include/"
 	PUBLIC "/usr/local/include/boost"
 	PUBLIC ${EIGEN3_INCLUDE_DIR}
-	# logging
-	# "/Users/chiu/projects_old/mjolnir/Mjolnir/external"
 )
 
 target_link_libraries(
