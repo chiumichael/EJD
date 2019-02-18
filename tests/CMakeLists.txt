@@ -1,52 +1,33 @@
-project(numerical_tests)
+project(ejd_tests)
 
 cmake_minimum_required (VERSION 3.11)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(test_monotonestruct_src test_monotonestruct.cxx)
-set(test_messages_src test_messages.cxx)
-set(test_empdistr_src test_empdistr.cxx)
-set(test_options_src test_options.cxx)
-set(test_lobster_src test_lobster.cxx)
-set(test_bidaskable_src test_bidaskable.cxx)
+function(build_test SRC_FILE)
+	get_filename_component(src_name_we ${SRC_FILE} NAME_WE)
+	set(target "${src_name_we}")
+	add_executable(${target} ${SRC_FILE})
+	# add_dependencies(${target} gtest) not needed now
+	target_include_directories(
+		${target}
+		PRIVATE
+		${CMAKE_SOURCE_DIR}/include
+		# ${TORCH_INCLUDE_DIRS}
+		# ${Boost_INCLUDE_DIRS}
+	)
+	target_link_libraries(
+		${target}
+		PRIVATE
+		# ${TORCH_LIBRARIES}
+		# ${Boost_LIBRARIES}
+	)
+	add_test(${target} ${target})
+endfunction(build_test)
 
-add_executable(test_monotonestruct ${test_monotonestruct_src} )
-add_executable(test_empdistr ${test_empdistr_src})
-add_executable(test_options ${test_options_src})
+# Note : can split this into sub-sources for additional testing granulartiy
+file(GLOB_RECURSE TEST_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.cxx")
 
-include_directories(
-	test_monotonestruct
-	PUBLIC ${CMAKE_SOURCE_DIR}/include
-)
-
-include_directories(
-	test_empdistr
-	PUBLIC ${CMAKE_SOURCE_DIR}/include
-)
-
-include_directories(
-	test_options
-	PUBLIC ${CMAKE_SOURCE_DIR}/include
-)
-
-target_link_libraries(
-	test_monotonestruct
-	PUBLIC Mjolnir
-)
-
-target_link_libraries(
-	test_empdistr
-	PUBLIC Mjolnir
-)
-
-target_link_libraries(
-	test_options
-	PUBLIC Mjolnir
-)
-
-add_test(monotonestruct test_monotonestruct)
-add_test(empdistr test_empdistr)
-add_test(options test_options)
-
-add_subdirectory(mpp)
+foreach(test_src ${TEST_SOURCES})
+	build_test(${test_src})
+endforeach(test_src)
