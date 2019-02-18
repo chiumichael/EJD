@@ -13,10 +13,14 @@ function(build_test SRC_FILE)
 		${target}
 		PRIVATE
 		${CMAKE_SOURCE_DIR}/include
+		# ${TORCH_INCLUDE_DIRS}
+		# ${Boost_INCLUDE_DIRS}
 	)
 	target_link_libraries(
 		${target}
 		PRIVATE
+		# ${TORCH_LIBRARIES}
+		# ${Boost_LIBRARIES}
 	)
 	add_test(${target} ${target})
 endfunction(build_test)
