@@ -21,10 +21,9 @@
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
     DEALINGS IN THE SOFTWARE.
 */
+
 #include "Zip.hpp"
-//std libs
 #include <vector>
-// boost libs
 #include "boost/math/distributions.hpp"		// includes all distributions
 
 namespace ejd {
