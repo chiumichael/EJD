@@ -35,28 +35,27 @@ find_package(
 )
 
 find_package(Eigen3 REQUIRED)
+find_package(fmt REQUIRED)
 
 add_library(
-	EJD SHARED
-	# utils
+	EJD 
+	SHARED
 	src/EmpiricalDistribution.cxx
 	src/ExtremeMeasures.cxx
 )
 
 target_include_directories(
 	EJD
-	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external
 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
-	PUBLIC "/usr/local/include/"
-	PUBLIC "/usr/local/include/boost"
+	# PUBLIC "/usr/local/include/boost"
+	PUBLIC ${Boost_INCLUDE_DIRS}
 	PUBLIC ${EIGEN3_INCLUDE_DIR}
 )
 
 target_link_libraries(
 	EJD
-	"/usr/local/lib/libfmt.a"
+	fmt::fmt
 	${Boost_LIBRARIES}
-	${Boost_FILESYSTEM_LIBRARY}
 )
 
 add_subdirectory(tests)	

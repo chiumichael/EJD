@@ -42,6 +42,7 @@ function(build_test SRC_FILE)
 		PRIVATE
 		# ${TORCH_LIBRARIES}
 		# ${Boost_LIBRARIES}
+		EJD
 	)
 	add_test(${target} ${target})
 endfunction(build_test)
