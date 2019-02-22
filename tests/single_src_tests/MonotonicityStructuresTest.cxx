@@ -21,14 +21,22 @@
     DEALINGS IN THE SOFTWARE.
 */
 
-// stdlibs
 #include "ExtremeMeasures.hpp"
 #include <iostream>
+#include <vector>
 
-int main(int argc, char const *argv[])
-{
-	/* code */
-	std::cout << "generic_test works!\n";
+int main(int argc, char const *argv[]) {
 
-	return 0;
+std::vector<ejd::MonotonicityStructure> ms;
+ms.reserve(9);
+
+for (int i = 2; i <= 10; ++i) {
+    ms.emplace_back(ejd::MonotonicityStructure(i));
+}
+
+for (const auto& e : ms) {
+    std::cout << e.extremePts_ << "\n";
+}
+
+return 0;
 }

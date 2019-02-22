@@ -5,6 +5,7 @@
 *notebooks/
 *build/
 /Matlab/
+/temp/
 
 #filetypes
 .DS_Store

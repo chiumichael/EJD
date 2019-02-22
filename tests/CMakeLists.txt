@@ -23,6 +23,8 @@ project(ejd_tests)
 
 cmake_minimum_required (VERSION 3.11)
 
+find_package(Eigen3 REQUIRED)
+
 set(CMAKE_CXX_STANDARD 17)
 
 function(build_test SRC_FILE)
@@ -34,21 +36,18 @@ function(build_test SRC_FILE)
 		${target}
 		PRIVATE
 		${CMAKE_SOURCE_DIR}/include
-		# ${TORCH_INCLUDE_DIRS}
-		# ${Boost_INCLUDE_DIRS}
+		${EIGEN3_INCLUDE_DIRS}
 	)
 	target_link_libraries(
 		${target}
 		PRIVATE
-		# ${TORCH_LIBRARIES}
-		# ${Boost_LIBRARIES}
 		EJD
 	)
 	add_test(${target} ${target})
 endfunction(build_test)
 
 # Note : can split this into sub-sources for additional testing granulartiy
-file(GLOB_RECURSE TEST_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.cxx")
+file(GLOB_RECURSE TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/single_src_tests/*.cxx")
 
 foreach(test_src ${TEST_SOURCES})
 	build_test(${test_src})
