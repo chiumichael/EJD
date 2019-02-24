@@ -33,7 +33,7 @@
 namespace bm = boost::math;
 
 constexpr bool TEST_UPPER_BOUND = false;
-constexpr bool TEST_EMP_DISTR_ARRAY = false;
+constexpr bool TEST_EMP_DISTR_ARRAY = true;
 
 int main( int argc, char const *argv[] )  {
 
@@ -58,9 +58,13 @@ if constexpr (TEST_EMP_DISTR_ARRAY) {
 
     auto a = empdistrarray.means();
     PrettyPrint(a);
+
+    // check valid prob distr
+    auto d = ejd::valid_emp_distr(empdistrarray.marginals[0].weights);
+
+    std::cout << "is true" << '\n';
+    std::cout << d << '\n';
 }
-
-
 
 return 0;
 }

@@ -42,6 +42,9 @@ namespace ejd {
 
 void edit_sum_1(std::vector<double> v);
 
+// checks that empirical distribution sums to 1
+bool valid_emp_distr(std::vector<double> p, double errtol=1e-7);
+
 //////////////////////////////////////////////////////////////////////////////
 //
 // Probabilistic Helper Functions 
