@@ -23,8 +23,14 @@
 */
 
 #include "Zip.hpp"
+#include <algorithm>
+#include <array>
 #include <vector>
 #include "boost/math/distributions.hpp"		// includes all distributions
+#include <iostream>							// debug purposes
+#include <cmath>
+
+namespace bm = boost::math;
 
 namespace ejd {
 
@@ -66,6 +72,18 @@ double discrete_empirical_variance(const std::vector<T> weights, const std::vect
 	return second_moment - std::pow(mean,2);
 }
 
+template <typename Distribution>
+int upper_bounds(Distribution d, double errtol=1e-5) {
+	std::array<double, 1000> x;
+	for (int i = 0; i < 1000; ++i) {
+		x[i] = bm::cdf(bm::complement(d, i));
+		if (x[i] <= errtol) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 //
 // Empirical Distribution 
@@ -97,7 +115,7 @@ auto construct_discrete_EmpDistr(Distribution distr, int support_end)
 		support.end(),
 		weights.begin(),
 		[&distr] (int x) {
-			return boost::math::pdf(distr,x);
+			return bm::pdf(distr,x);
 		}
 	);		
 	return EmpiricalDistribution {.weights = weights, .support = support};
@@ -109,10 +127,15 @@ auto construct_discrete_EmpDistr(Distribution distr, int support_end)
 //
 //////////////////////////////////////////////////////////////////////////////
 
-// TO-DO : does not take into account tolerance!!
+// TO-DO : does not take into account tolerance!
 // Empirical Distribution Array
 struct EmpDistrArray
 {
+	EmpDistrArray() = default;
+	EmpDistrArray(const std::vector<EmpiricalDistribution> marginals)
+		: marginals(std::move(marginals))
+	{}
+
 	// data
 	std::vector<EmpiricalDistribution> marginals;
 	// member functions
@@ -120,6 +143,9 @@ struct EmpDistrArray
 	std::vector<double> variances() const;
 	int dimensions() const;
 };
+
+// TO-DO : enable each underlying marginal distribution to have it's own max_upperbound, ie, un-normalized marginals
+EmpDistrArray construct_EmpDistrArray(std::vector<bm::poisson> poisson_distrs);
 
 // namespace ejd
 }

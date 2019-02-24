@@ -87,5 +87,25 @@ std::vector<double> EmpDistrArray::variances() const {
 	return variances;
 }
 
+EmpDistrArray construct_EmpDistrArray(std::vector<bm::poisson> poisson_distrs) 
+{
+	std::vector<EmpiricalDistribution> emp_distr_data;
+
+	// calculate the max length of uspport 
+	int max_upper_bound = 0;
+	for (int i = 0; i < poisson_distrs.size(); ++i) {
+		int this_ub = upper_bounds(poisson_distrs[i]);
+		max_upper_bound = max_upper_bound < this_ub ? this_ub : max_upper_bound;
+	}
+
+	for (int i = 0; i < poisson_distrs.size(); ++i) {
+		emp_distr_data.emplace_back(
+			construct_discrete_EmpDistr(poisson_distrs[i], max_upper_bound)
+		);
+	}
+
+	return EmpDistrArray(emp_distr_data);
+}
+
 // namespace ejd
 }
