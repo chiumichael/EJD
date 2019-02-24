@@ -40,7 +40,7 @@ namespace ejd {
 //
 //////////////////////////////////////////////////////////////////////////////
 
-void edit_sum_1(std::vector<double> v);
+void edit_sum_1(std::vector<double> * v_ptr);
 
 // checks that empirical distribution sums to 1
 bool valid_emp_distr(std::vector<double> p, double errtol=1e-7);
@@ -105,7 +105,7 @@ struct EmpiricalDistribution {
 
 // TO-DO : force variable precision
 template <typename Distribution>
-auto construct_discrete_EmpDistr(Distribution distr, int support_end) 
+auto construct_discrete_EmpDistr(Distribution distr, int support_end, bool edit_tail=true) 
 	-> EmpiricalDistribution
 {
 	// create support
@@ -120,7 +120,12 @@ auto construct_discrete_EmpDistr(Distribution distr, int support_end)
 		[&distr] (int x) {
 			return bm::pdf(distr,x);
 		}
-	);		
+	);	
+
+	if (edit_tail) {
+		edit_sum_1(&weights);
+	}
+
 	return EmpiricalDistribution {.weights = weights, .support = support};
 }
 

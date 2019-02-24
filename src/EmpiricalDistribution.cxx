@@ -53,7 +53,7 @@ bool valid_emp_distr(std::vector<double> p, double errtol) {
 	
 	double sum;
 	std::for_each(p.begin(), p.end(),
-		[&sum](double p_){sum += p_;}
+		[&sum](double p_){ sum += p_; }
 	);
 	if (sum - 1 < errtol) {
 		return true;
@@ -125,6 +125,10 @@ std::vector<double> EmpDistrArray::variances() const {
 	);
 
 	return variances;
+}
+
+int EmpDistrArray::dimensions() const {
+	return marginals.size();
 }
 
 EmpDistrArray construct_EmpDistrArray(std::vector<bm::poisson> poisson_distrs) 

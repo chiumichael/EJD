@@ -29,6 +29,7 @@
 // std libs
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 namespace bm = boost::math;
 
@@ -64,6 +65,11 @@ if constexpr (TEST_EMP_DISTR_ARRAY) {
 
     std::cout << "is true" << '\n';
     std::cout << d << '\n';
+
+    // check that it sums to 1 - ie tails are edited
+    auto sum = std::accumulate(std::begin(empdistrarray.marginals[0].weights), std::end(empdistrarray.marginals[0].weights),0.0);
+
+    std::cout << "sum is : " << sum << "\n";
 }
 
 return 0;
