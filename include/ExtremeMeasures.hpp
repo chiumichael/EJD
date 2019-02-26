@@ -4,7 +4,7 @@
 
     Copyright © 2019
               Michael Chiu <chiu@cs.toronto.edu>
-
+    
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
     to deal in the Software without restriction, including without limitation
@@ -22,15 +22,88 @@
     DEALINGS IN THE SOFTWARE.
 */
 
+// 3rd party
 #include <Eigen/Core>
+// intralib
+#include "EmpiricalDistribution.hpp"
+// stl
+#include <vector>
 
 namespace ejd {
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Monotonicity Structure
+//
+//////////////////////////////////////////////////////////////////////////////
 
 struct MonotonicityStructure {
 	explicit MonotonicityStructure(const int dim);
 	int num_extremepts() const;
 	Eigen::MatrixXi extremePts_;
 };
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Extreme Measures
+//
+//////////////////////////////////////////////////////////////////////////////
+
+struct LatticePoint {
+    std::vector<int> point_;
+    // comparison operators 
+    bool operator==(const LatticePoint & y) const;
+    bool operator<(const LatticePoint & y) const;
+    // constructors
+    LatticePoint(const std::vector<int> point) 
+        : point_(std::move(point))
+    {}
+};
+
+struct ExtremeMeasure
+{
+    // data
+    std::vector<LatticePoint> support;
+    std::vector<double> weights;
+    std::vector<int> monotone_structure;
+
+    // methods
+    ExtremeMeasure operator+() const;
+    int dimension() const;
+};
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Extreme Joint Distribution
+//
+//////////////////////////////////////////////////////////////////////////////
+
+template <typename T>
+void apply_cumsum(std::vector<T> * v_ptr) 
+{
+    std::vector<T> & v = * v_ptr;
+    for (int i = 1; i < v.size(); i++) {
+        v[i] += v[i-1];
+    }
+}
+
+template <typename T>
+std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
+    std::size_t total_size = 0;
+    for (const auto & sub : v) {
+        total_size += sub.size();
+    }
+    std::vector<T> result;
+    result.reserve(total_size);
+    for (const auto & sub : v) {
+        result.insert(result.end(), sub.begin(), sub.end());
+    }
+    return result;
+}
+
+std::vector<std::vector<double>> flip_EmpDistrArray_CDF(const std::vector<EmpiricalDistribution> marginal_pdfs, const std::vector<int> monotone_structure);
+
+ExtremeMeasure ejd(EmpDistrArray empdistrarrs, std::vector<int> monotone_structs);
 
 // namespace ejd
 }

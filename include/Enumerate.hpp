@@ -22,19 +22,19 @@
     DEALINGS IN THE SOFTWARE.
 */
 
-#include <iostream>
+#include "Zip.hpp"
+#include "Range.hpp"
 
+namespace ejd {
+	
 template <typename T>
-void PrettyPrint (const std::vector<T> v) {
-    for (const auto & e : v) {
-        std::cout << e << ", ";
-    }
-    std::cout << '\n';
+auto enumerate(T&& v) {
+    return zip(range(),std::forward<T>(v));
 }
 
 template <typename T>
-void PrettyPrint (const std::vector<std::vector<T>> v) {
-    for (const auto & e : v) {
-        PrettyPrint(e);
-    }
+auto enumerate(std::initializer_list<T>&& v) {
+	return zip(range(),v);
+}
+
 }

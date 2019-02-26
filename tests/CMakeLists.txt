@@ -27,6 +27,8 @@ find_package(Eigen3 REQUIRED)
 
 set(CMAKE_CXX_STANDARD 17)
 
+add_subdirectory(${CMAKE_SOURCE_DIR}/extern/googletest "extern/googletest")
+
 function(build_test SRC_FILE)
 	get_filename_component(src_name_we ${SRC_FILE} NAME_WE)
 	set(target "${src_name_we}")
@@ -42,6 +44,9 @@ function(build_test SRC_FILE)
 		${target}
 		PRIVATE
 		EJD
+		gtest
+		gmock
+		gtest_main
 	)
 	add_test(${target} ${target})
 endfunction(build_test)

@@ -20,7 +20,6 @@
 # DEALINGS IN THE SOFTWARE.
 
 project (EJD)
-enable_testing()
 
 cmake_minimum_required (VERSION 3.12)
 
@@ -58,6 +57,10 @@ target_link_libraries(
 	${Boost_LIBRARIES}
 )
 
+option(EJD_TESTS "Build thes tests" ON)
+if(EJD_TESTS)
+enable_testing()
 add_subdirectory(tests)	
+endif()
 
 install (TARGETS EJD DESTINATION bin COMPONENT EJD)

@@ -23,7 +23,6 @@
 */
 
 #include "Zip.hpp"
-#include <algorithm>
 #include <array>
 #include <vector>
 #include "boost/math/distributions.hpp"		// includes all distributions
