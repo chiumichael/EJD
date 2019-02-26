@@ -6,6 +6,7 @@ This library provides a C++ implementation of the Extreme Joint Distribution (EJ
 - CMake 3.10+
 - C++14/17
 - Eigen3
+- Boost 1.67+ (relies on Boost.Math)
 
 
 ### References
