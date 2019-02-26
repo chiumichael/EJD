@@ -1,8 +1,8 @@
-# Extreme Joint Distributions
+## Extreme Joint Distributions
 
 This library provides a C++ implementation of the Extreme Joint Distribution (EJD) algorithm in [1].
 
-#### Dependencies
+### Dependencies
 - CMake 3.10+
 - C++14/17
 - Eigen3
