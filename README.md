@@ -7,7 +7,7 @@ This library provides a C++ implementation of the Extreme Joint Distribution (EJ
 - C++14/17
 - Eigen3
 
----
+
 If you find this library useful, please consider citing 
 ```
 @article{chiu2017correlated,
