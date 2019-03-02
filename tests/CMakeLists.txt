@@ -47,6 +47,7 @@ function(build_test SRC_FILE)
 		gtest
 		gmock
 		gtest_main
+		fmt::fmt
 	)
 	add_test(${target} ${target})
 endfunction(build_test)

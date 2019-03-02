@@ -46,15 +46,14 @@ add_library(
 target_include_directories(
 	EJD
 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
-	# PUBLIC "/usr/local/include/boost"
-	PUBLIC ${Boost_INCLUDE_DIRS}
+	PRIVATE ${Boost_INCLUDE_DIRS}
 	PUBLIC ${EIGEN3_INCLUDE_DIR}
 )
 
 target_link_libraries(
 	EJD
-	fmt::fmt
-	${Boost_LIBRARIES}
+	PRIVATE fmt::fmt
+	PRIVATE ${Boost_LIBRARIES}
 )
 
 option(EJD_TESTS "Build thes tests" ON)
