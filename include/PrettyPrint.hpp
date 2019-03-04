@@ -23,18 +23,25 @@
 */
 
 #include <iostream>
+#include <string>
 
 template <typename T>
-void PrettyPrint (const std::vector<T> v) {
+void PrettyPrint (const std::vector<T> v, bool vertical=false) {
+
+    std::string endstr {", "};
+    if (vertical) {
+        endstr = "\n";
+    }
+
     for (const auto & e : v) {
-        std::cout << e << ", ";
+        std::cout << e << endstr;
     }
     std::cout << '\n';
 }
 
 template <typename T>
-void PrettyPrint (const std::vector<std::vector<T>> v) {
+void PrettyPrint (const std::vector<std::vector<T>> v, bool vertical=false) {
     for (const auto & e : v) {
-        PrettyPrint(e);
+        PrettyPrint(e,vertical);
     }
 }

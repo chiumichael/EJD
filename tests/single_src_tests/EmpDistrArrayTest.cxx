@@ -21,56 +21,52 @@
     DEALINGS IN THE SOFTWARE.
 */
 
-#include "ExtremeMeasures.hpp"
-#include "EmpiricalDistribution.hpp"
+#include "Enumerate.hpp"
 #include "PrettyPrint.hpp"
+#include "EmpiricalDistribution.hpp"
+#include "ExtremeMeasures.hpp"
 // boost
 #include "boost/math/distributions.hpp"
+#include "Eigen/Core"
 // std libs
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <type_traits>
+#include <numeric>
+
+#include "gtest/gtest.h"
 
 namespace bm = boost::math;
 
 constexpr bool TEST_UPPER_BOUND = false;
-constexpr bool TEST_EMP_DISTR_ARRAY = true;
+constexpr bool TEST_EMP_DISTR_ARRAY = false;
+constexpr bool TEST_LATTICE_POINT = false;
+constexpr bool EJD_SCRATCH = true;
 
-int main( int argc, char const *argv[] )  {
-
-std::vector<int> poisson_params {3,5,7,9};
-
-boost::math::poisson poiss(3);
-
-std::vector<boost::math::poisson> poiss_vec;
-
-for (const auto & e : poisson_params) {
-    poiss_vec.emplace_back(boost::math::poisson(e));
-}
-
-// TO-DO add tests for other distributions
-if constexpr (TEST_UPPER_BOUND) 
+struct EmpDistrArrayTests : public ::testing::Test 
 {
-    std::cout << ejd::upper_bounds(poiss_vec[1]) << '\n'; 
+    std::vector<int> poisson_params {3,5,7,9};
+    std::vector<boost::math::poisson> poiss_vec;
+
+    virtual void SetUp() override {    
+        for (const auto & e : poisson_params) {
+            poiss_vec.emplace_back(boost::math::poisson(e));
+        }
+    }
+};
+
+TEST_F(EmpDistrArrayTests, upper_bounds) {
+    
+    EXPECT_EQ(
+        ejd::upper_bounds(poiss_vec[1])
+    ,17);
 }
 
-if constexpr (TEST_EMP_DISTR_ARRAY) {
-    auto empdistrarray = ejd::construct_EmpDistrArray(poiss_vec);
-
-    auto a = empdistrarray.means();
-    PrettyPrint(a);
-
-    // check valid prob distr
-    auto d = ejd::valid_emp_distr(empdistrarray.marginals[0].weights);
-
-    std::cout << "is true" << '\n';
-    std::cout << d << '\n';
-
-    // check that it sums to 1 - ie tails are edited
-    auto sum = std::accumulate(std::begin(empdistrarray.marginals[0].weights), std::end(empdistrarray.marginals[0].weights),0.0);
-
-    std::cout << "sum is : " << sum << "\n";
+int main(int argc, char **argv)
+{
+    /* code */
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
 
-return 0;
-}

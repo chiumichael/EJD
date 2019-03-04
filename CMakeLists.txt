@@ -56,6 +56,11 @@ target_link_libraries(
 	PRIVATE ${Boost_LIBRARIES}
 )
 
+target_compile_options(
+	EJD
+	PRIVATE "-Wall"
+)
+
 option(EJD_TESTS "Build thes tests" ON)
 if(EJD_TESTS)
 enable_testing()

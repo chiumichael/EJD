@@ -24,12 +24,15 @@
 
 // 3rd party
 #include <Eigen/Core>
-// intralib
-#include "EmpiricalDistribution.hpp"
 // stl
+#include <algorithm>
 #include <vector>
 
 namespace ejd {
+
+// fwd declarations
+struct EmpiricalDistribution;
+struct EmpDistrArray;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -60,13 +63,13 @@ struct LatticePoint {
     {}
 };
 
+std::ostream& operator<<(std::ostream& os, const LatticePoint& point);
+
 struct ExtremeMeasure
 {
-    // data
     std::vector<LatticePoint> support;
     std::vector<double> weights;
     std::vector<int> monotone_structure;
-
     // methods
     ExtremeMeasure operator+() const;
     int dimension() const;
@@ -88,6 +91,17 @@ void apply_cumsum(std::vector<T> * v_ptr)
 }
 
 template <typename T>
+void apply_cumsum(std::vector<std::vector<T>> * v_ptr)
+{
+    std::vector<std::vector<T>> & v = * v_ptr;
+    std::for_each(v.begin(), v.end(),
+        [] (std::vector<T> v_in) {
+            apply_cumsum(v_in);
+        }
+    );
+}
+
+template <typename T>
 std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
     std::size_t total_size = 0;
     for (const auto & sub : v) {
@@ -101,7 +115,31 @@ std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
     return result;
 }
 
-std::vector<std::vector<double>> flip_EmpDistrArray_CDF(const std::vector<EmpiricalDistribution> marginal_pdfs, const std::vector<int> monotone_structure);
+template <typename T>
+std::vector<T> flip_vectors(const std::vector<T> vector_to_flip, const std::vector<int> flip_indicator) 
+{
+    std::vector<T> flipped_vector;
+
+    for (int i = 0; i < flipped_vector.size(); ++i) {
+        
+        flipped_vector.push_back(vector_to_flip[i]);
+
+        if (flip_indicator[i] == -1) {
+            std::reverse(std::begin(flipped_vector[i]), std::end(flipped_vector[i]));
+        }
+    }
+    return flipped_vector;
+}
+
+std::vector<std::vector<double>> flip_EmpDistrArray_CDF(
+    const std::vector<EmpiricalDistribution> marginal_pdfs,
+    const std::vector<int> monotone_struture);
+
+std::vector<std::vector<double>> flip_supports(
+    const std::vector<EmpiricalDistribution> marginal_pdfs,
+    const std::vector<int> monotone_structs);
+
+void ensure_right_tail(std::vector<double> * prob_distr_);
 
 ExtremeMeasure ejd(EmpDistrArray empdistrarrs, std::vector<int> monotone_structs);
 
