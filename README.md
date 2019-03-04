@@ -8,6 +8,14 @@ This library provides a C++ implementation of the Extreme Joint Distribution (EJ
 - Eigen3
 - Boost 1.67+ (relies on Boost.Math)
 
+### Build
+The usual CMake build procedure
+```bash
+mkdir build
+cd build
+cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release
+ninja -j4
+```
 
 ### References
 
