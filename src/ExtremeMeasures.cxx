@@ -35,7 +35,7 @@ namespace ejd {
 //
 //////////////////////////////////////////////////////////////////////////////
 
-// TO-DO : implement the non-recursive version
+// TODO : implement the non-recursive version
 static Eigen::MatrixXi construct_monotonestruct(const int n)
 {
 	if (n == 2)
@@ -138,7 +138,7 @@ std::ostream& operator<<(std::ostream& os, const LatticePoint& point)
 //
 //////////////////////////////////////////////////////////////////////////////
 
-// TO-DO refactor and split into two sub functions (into more general utilities)
+// TODO refactor and split into two sub functions (into more general utilities)
 std::vector<std::vector<double>> flip_EmpDistrArray_CDF(
 	const std::vector<EmpiricalDistribution> marginal_pdfs,
 	const std::vector<int> monotone_struture) 
@@ -247,7 +247,6 @@ ExtremeMeasure ejd(EmpDistrArray empdistrarrs, std::vector<int> monotone_structs
 			} 
 			else
 			{
-				std::cout << "here. index: " << std::distance(marginalcdf_value.begin(),a) << '\n';
 				ith_support.push_back(std::distance(marginalcdf_value.begin(),a));
 			}
 		}
