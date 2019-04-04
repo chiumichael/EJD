@@ -10,3 +10,6 @@
 #filetypes
 .DS_Store
 .vscode
+
+#misc
+notes.md
