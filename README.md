@@ -4,7 +4,7 @@ This library provides a C++ implementation of the Extreme Joint Distribution (EJ
 
 ### Dependencies
 - CMake 3.10+
-- C++14/17
+- C++17
 - Eigen3
 - Boost 1.67+ (relies on Boost.Math)
 - [Discreture](https://github.com/mraggi/discreture)
@@ -14,7 +14,7 @@ The usual CMake build procedure
 ```bash
 mkdir build
 cd build
-cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake .. -DCMAKE_BUILD_TYPE=Release
 ninja -j4
 ```
 
