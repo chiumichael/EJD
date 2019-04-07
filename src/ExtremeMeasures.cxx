@@ -21,11 +21,16 @@
     DEALINGS IN THE SOFTWARE.
 */
 
+#include "AnsiColor.hpp"
 #include "Enumerate.hpp"
 #include "EmpiricalDistribution.hpp"
 #include "ExtremeMeasures.hpp"
-#include <numeric>
+#include "PrettyPrint.hpp"
+// 3rd party
+#include "Discreture/Combinations.hpp"
+// std libs
 #include <cmath>
+#include <numeric>
 
 namespace ejd {
 
@@ -67,47 +72,64 @@ static Eigen::MatrixXi construct_monotonestruct(const int n)
 
 MonotonicityStructure::MonotonicityStructure(const int dim) 
 {
-	this->extremePts_ = construct_monotonestruct(dim);
+	this->extremePts = construct_monotonestruct(dim);
 }
 
 int MonotonicityStructure::num_extremepts() const {
-	return this->extremePts_.cols();
+	return this->extremePts.cols();
+}
+
+std::pair<int, int> MonotonicityStructure::size() const {
+	return std::pair(extremePts.rows(),extremePts.cols());	
+}
+ 
+std::vector<int> MonotonicityStructure::operator[](int this_col) const
+{
+	// auto b = extremePts.col(col);
+	auto [m,n] = this->size();
+	std::vector<int> cols_to_return(n);
+	Eigen::VectorXi::Map(&cols_to_return[0],n) = extremePts.col(this_col);
+	return cols_to_return;
+}
+
+std::ostream& operator<<(std::ostream& os, const MonotonicityStructure& ms) 
+{
+	os << ms.extremePts;
+	return os;
 }
 
 //////////////////////////////////////////////////////////////////////////////
 //
-// Extreme Measures
+// Lattice Point
 //
 //////////////////////////////////////////////////////////////////////////////
 
 bool LatticePoint::operator==(const LatticePoint &y) const {
 	
-	if(point_.size() != y.point_.size()) {
+	if (point.size() != y.point.size()) {
 		return false;
 	}
-
-	for (int i = 0; i < point_.size(); ++i) {
-		if (point_[i] != y.point_[i]) {
+	for (int i = 0; i < point.size(); ++i) {
+		if (point[i] != y.point[i]) {
 			return false;
 		}
 	}
-
 	return true;
 }
 
 bool LatticePoint::operator<(const LatticePoint &y) const {
 
-	if (point_.size() != y.point_.size()) {
+	if (point.size() != y.point.size()) {
 		return false;
 	}
 
 	bool prev_coord_less_than = false;
 
-	for (int i = 0; i < point_.size(); ++i) {
-		if (point_[i] == y.point_[i]) {
+	for (int i = 0; i < point.size(); ++i) {
+		if (point[i] == y.point[i]) {
 			continue;
 		}
-		else if (point_[i] < y.point_[i]) {
+		else if (point[i] < y.point[i]) {
 			if (prev_coord_less_than) {
 				return false;
 			} else {
@@ -121,15 +143,159 @@ bool LatticePoint::operator<(const LatticePoint &y) const {
 	return false;
 }
 
-std::ostream& operator<<(std::ostream& os, const LatticePoint& point)
+int LatticePoint::dimensions() const {
+	return point.size();
+}
+
+int LatticePoint::product() const {
+	return std::accumulate(std::begin(point), std::end(point), 1, std::multiplies<int>());
+}
+
+std::ostream& operator<<(std::ostream& os, const LatticePoint& latticept)
 {
 	os << '(';
-	auto d = point.point_.size();
+	auto d = latticept.point.size();
 	for (int i = 0; i < d; ++i) {
-		os << point.point_[i] << ',';
+		os << latticept.point[i] << ',';
 	}
 	os << ')';
 	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const std::vector<LatticePoint>& support)
+{
+	for (auto && sup : support) {
+		os << sup << '\n';
+	}
+	return os;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Discrete Measure
+//
+//////////////////////////////////////////////////////////////////////////////
+
+DiscreteMeasure DiscreteMeasure::operator+(const DiscreteMeasure &other_dm) 
+{
+	DiscreteMeasure dm_new {this->support, this->weights};
+	dm_new += other_dm;
+	return dm_new;
+}
+
+DiscreteMeasure& DiscreteMeasure::operator+=(const DiscreteMeasure &other_em)
+{
+	for(int i = 0; i < other_em.size(); ++i) {
+		// note : may have to implement custom comparator should numerical issues arise
+		auto found = std::find(std::begin(support), std::end(support), other_em.support[i]);
+
+		if (found != std::end(support)) {
+			// found in this support
+			int index = std::distance(std::begin(support),found);
+			weights[index] += other_em.weights[i];
+			continue;
+		}
+		// add point
+		support.push_back(other_em.support[i]);
+		weights.push_back(other_em.weights[i]);
+	}
+
+	// elements were added; sort!
+	sort();
+
+	return *this;
+}
+
+int DiscreteMeasure::dimension() const noexcept{
+	return support[0].dimensions();
+}
+
+int DiscreteMeasure::size() const noexcept {
+	return support.size();
+}
+
+void DiscreteMeasure::sort() noexcept {
+	auto sorted_indices = sort_indices(this->support);	
+	std::sort(this->support.begin(), this->support.end());
+	reorder(this->weights, sorted_indices);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Extreme Measure
+//
+//////////////////////////////////////////////////////////////////////////////
+
+// FINISH-ME ?
+// DiscreteMeasure ExtremeMeasure::operator+(const ExtremeMeasure& other_em) const 
+// {
+// 	// note : ExtremeMeasures have to be of the same dimension
+// 	assert(this->dimension() == other_em.dimension());
+
+// 	std::vector<LatticePoint> new_support;
+// }
+
+// FINISH-ME
+ExtremeMeasure ExtremeMeasure::marginalize(const std::vector<int>& to_marginalize_out) const
+{
+	// note : to_marginalize_out contains indices we want to collapse and assumes 0-indexing
+
+	// orig:  0 1 2 3 4 5
+	// t_m_o : 0 2 4
+
+	// start with 0:
+	// orig_1 : 1 2 3 4 5 (actually "0 1 2 3 4")
+	// t_m_o : 2 4 (actually "1 3")
+
+	// now remove original 2 but now "1"
+	// orig_2 : 1 3 4 5 (actually "0 2 3 4", actually "0 1 2 3")
+	// orig t_m_o : 4 (actually "2")
+
+	// now remove original 4 but now "2"
+	// orig_3 : 1 3 5 (actually "0, 1, 2")
+
+	// get rid of the assert and return this pointer / copy?
+	assert(to_marginalize_out.size() > 0);
+	assert(to_marginalize_out.size() < dimension());	// TOTEST
+
+	// update monotone structure
+	auto updated_ms = monotone_structure;
+
+	// marginalized support
+	// marginalized weights
+}
+
+std::ostream& operator<<(std::ostream& os, const ExtremeMeasure& em) 
+{
+	os <<  AnsiColor::magenta << "Extreme Measure:" << AnsiColor::none << '\n';
+	os << AnsiColor::green << "Monotone Structure: " << AnsiColor::none;
+	PrettyPrint(em.monotone_structure); 
+	os << AnsiColor::green << "Dimensions: " << AnsiColor::none << em.dimension() << '\n';
+	os << AnsiColor::green <<"Support: " << AnsiColor::none << '\n';
+	os << em.support; 
+	os << AnsiColor::green <<"Weights: " << AnsiColor::none << '\n';
+	PrettyPrint(em.weights);
+	return os;
+}
+
+// convenience function
+
+std::vector<ExtremeMeasure> construct_Poisson_ExtremeMeasures(const std::vector<int>& intensities)
+{
+	// construct EmpDistrArray
+	auto poiss_emdistr_array = construct_Poisson_EmpDistrArray(intensities);
+	const int dim = intensities.size();
+	// generate monotone structures
+	auto ms = MonotonicityStructure(dim);
+	const int num_ms = ms.num_extremepts();
+
+	std::vector<ExtremeMeasure> ems;
+	ems.reserve(num_ms);
+
+	for (int i = 0; i < num_ms; ++i) {
+		ems.emplace_back( ejd( poiss_emdistr_array, ms[i] ) );
+	}
+	return ems;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -140,8 +306,8 @@ std::ostream& operator<<(std::ostream& os, const LatticePoint& point)
 
 // TODO refactor and split into two sub functions (into more general utilities)
 std::vector<std::vector<double>> flip_EmpDistrArray_CDF(
-	const std::vector<EmpiricalDistribution> marginal_pdfs,
-	const std::vector<int> monotone_struture) 
+	const std::vector<EmpiricalDistribution>& marginal_pdfs,
+	const std::vector<int>& monotone_struture) 
 {
 	std::vector<std::vector<double>> marginal_cdf;
 
@@ -155,7 +321,7 @@ std::vector<std::vector<double>> flip_EmpDistrArray_CDF(
 	}
 	std::for_each(
 		marginal_cdf.begin(), marginal_cdf.end(),
-		[](auto & z){
+		[] (auto & z) {
 			apply_cumsum(&z);
 		}
 	);
@@ -163,8 +329,8 @@ std::vector<std::vector<double>> flip_EmpDistrArray_CDF(
 }
 
 std::vector<std::vector<double>> flip_supports(
-	const std::vector<EmpiricalDistribution> marginal_pdfs,
-	const std::vector<int> monotone_structs)
+	const std::vector<EmpiricalDistribution>& marginal_pdfs,
+	const std::vector<int>& monotone_structs)
 {
 	std::vector<std::vector<double>> flipped_support;
 
@@ -255,7 +421,7 @@ ExtremeMeasure ejd(EmpDistrArray empdistrarrs, std::vector<int> monotone_structs
 		}
 		support.emplace_back(LatticePoint(ith_support));
 	}
-	return {.support=support, .weights=weights, .monotone_structure=monotone_structs};
+	return { {.support=support, .weights=weights}, .monotone_structure=monotone_structs};
 }
 // namespace ejd	
 }

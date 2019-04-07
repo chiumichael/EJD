@@ -27,6 +27,7 @@
 #include "ExtremeMeasures.hpp"
 // boost
 #include "boost/math/distributions.hpp"
+namespace bm = boost::math;
 #include "Eigen/Core"
 // std libs
 #include <iostream>
@@ -37,30 +38,54 @@
 
 #include "gtest/gtest.h"
 
-namespace bm = boost::math;
+using namespace ejd;
 
-constexpr bool TEST_UPPER_BOUND = false;
-constexpr bool TEST_EMP_DISTR_ARRAY = false;
-constexpr bool TEST_LATTICE_POINT = false;
-constexpr bool EJD_SCRATCH = true;
+//////////////////////////////////////////////////////////////////////////////
+//
+// Empirical Distribution Tests
+//
+//////////////////////////////////////////////////////////////////////////////
+
+struct EmpDistrTests : public ::testing::Test {
+    std::vector<int> poisson_params {3,5,7,9};
+    
+};
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Empirical Distribution Array Tests
+//
+//////////////////////////////////////////////////////////////////////////////
 
 struct EmpDistrArrayTests : public ::testing::Test 
 {
     std::vector<int> poisson_params {3,5,7,9};
-    std::vector<boost::math::poisson> poiss_vec;
+    std::vector<boost::math::poisson> poisson_distrs;
+    EmpDistrArray empdistrarray_poiss;
 
-    virtual void SetUp() override {    
+    EmpDistrArrayTests() {    
         for (const auto & e : poisson_params) {
-            poiss_vec.emplace_back(boost::math::poisson(e));
+            poisson_distrs.emplace_back(boost::math::poisson(e));
         }
+        empdistrarray_poiss = construct_EmpDistrArray(poisson_distrs);
     }
 };
 
 TEST_F(EmpDistrArrayTests, upper_bounds) {
-    
     EXPECT_EQ(
-        ejd::upper_bounds(poiss_vec[1])
+        ejd::upper_bounds(poisson_distrs[1])
     ,17);
+}
+
+TEST_F(EmpDistrArrayTests, CONTSTRUCTION_TEST_1) {
+    EXPECT_EQ(
+        empdistrarray_poiss.dimensions() 
+        ,4
+    );
+}
+
+TEST_F(EmpDistrArrayTests, construct_Poisson_EmpDistrArray) {
+    auto a = ejd::construct_Poisson_EmpDistrArray(poisson_params);
 }
 
 int main(int argc, char **argv)

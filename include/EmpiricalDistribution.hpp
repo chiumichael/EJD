@@ -23,11 +23,10 @@
 */
 
 #include "Zip.hpp"
-#include <array>
-#include <vector>
 #include "boost/math/distributions.hpp"		// includes all distributions
-#include <iostream>							// debug purposes
+#include <array>
 #include <cmath>
+#include <vector>
 
 namespace bm = boost::math;
 
@@ -42,7 +41,7 @@ namespace ejd {
 void edit_sum_1(std::vector<double> * v_ptr);
 
 // checks that empirical distribution sums to 1
-bool valid_emp_distr(std::vector<double> p, double errtol=1e-7);
+bool valid_emp_distr(const std::vector<double>& p, double errtol=1e-7);
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -50,8 +49,9 @@ bool valid_emp_distr(std::vector<double> p, double errtol=1e-7);
 //
 //////////////////////////////////////////////////////////////////////////////
 
+// uni dimensional
 template<typename T>
-double discrete_nth_moment(std::vector<T> weights, std::vector<T> support, const int N)
+double discrete_nth_moment(const std::vector<T>& weights, const std::vector<T>& support, const int& N)
 {
 	double moment = 0;
 
@@ -62,20 +62,20 @@ double discrete_nth_moment(std::vector<T> weights, std::vector<T> support, const
 }
 
 template <typename T>	// restrict T to numeric types in the future w/ concepts
-double discrete_empirical_mean(std::vector<T> weights, std::vector<T> support) {
+double discrete_empirical_mean(const std::vector<T>& weights, const std::vector<T>& support) {
 	// note : type of weights and support should not _need_ to be equal
 	return discrete_nth_moment<T>(weights,support,1);
 }
 
 template <typename T>
-double discrete_empirical_variance(const std::vector<T> weights, const std::vector<T> support) {
+double discrete_empirical_variance(const std::vector<T>& weights, const std::vector<T>& support) {
 	double mean = discrete_empirical_mean(weights,support);
 	double second_moment = discrete_nth_moment<T>(weights,support,2);
 	return second_moment - std::pow(mean,2);
 }
 
 template <typename Distribution>
-int upper_bounds(Distribution d, double errtol=1e-5) {
+int upper_bounds(const Distribution& d, double errtol=1e-5) {
 	std::array<double, 1000> x;
 	for (int i = 0; i < 1000; ++i) {
 		x[i] = bm::cdf(bm::complement(d, i));
@@ -95,6 +95,8 @@ int upper_bounds(Distribution d, double errtol=1e-5) {
 struct EmpiricalDistribution {
 	std::vector<double> weights;
 	std::vector<double> support;
+	// operators
+	bool operator==(const EmpiricalDistribution& rhs) const;
 	// methods
 	double mean() const;
 	double variance() const;
@@ -102,10 +104,9 @@ struct EmpiricalDistribution {
 	double entropy() const;
 };
 
-// TO-DO : force variable precision
+// TODO : force variable precision
 template <typename Distribution>
-auto construct_discrete_EmpDistr(Distribution distr, int support_end, bool edit_tail=true) 
-	-> EmpiricalDistribution
+auto construct_discrete_EmpDistr(const Distribution& distr, const int& support_end, bool edit_tail=true) -> EmpiricalDistribution
 {
 	// create support
 	std::vector<double> support(support_end);
@@ -119,12 +120,10 @@ auto construct_discrete_EmpDistr(Distribution distr, int support_end, bool edit_
 		[&distr] (int x) {
 			return bm::pdf(distr,x);
 		}
-	);	
-
+	);
 	if (edit_tail) {
 		edit_sum_1(&weights);
 	}
-
 	return EmpiricalDistribution {.weights = weights, .support = support};
 }
 
@@ -134,8 +133,7 @@ auto construct_discrete_EmpDistr(Distribution distr, int support_end, bool edit_
 //
 //////////////////////////////////////////////////////////////////////////////
 
-// TO-DO : does not take into account tolerance!
-// Empirical Distribution Array
+// TODO : does not take into account tolerance!
 struct EmpDistrArray
 {
 	EmpDistrArray() = default;
@@ -145,14 +143,19 @@ struct EmpDistrArray
 
 	// data
 	std::vector<EmpiricalDistribution> marginals;
+	// operators
+	bool operator==(const EmpDistrArray& rhs) const;
 	// member functions
 	std::vector<double> means() const;
 	std::vector<double> variances() const;
 	int dimensions() const;
 };
 
-// TO-DO : enable each underlying marginal distribution to have it's own max_upperbound, ie, un-normalized marginals
-EmpDistrArray construct_EmpDistrArray(std::vector<bm::poisson> poisson_distrs);
+// TODO : enable each underlying marginal distribution to have its own max_upperbound, ie, marginals with un-normalized supports
+EmpDistrArray construct_EmpDistrArray(const std::vector<bm::poisson>& poisson_distrs);
+
+// convenience function since Poisson distribution used widely
+EmpDistrArray construct_Poisson_EmpDistrArray(const std::vector<int>& intensities);
 
 // namespace ejd
 }

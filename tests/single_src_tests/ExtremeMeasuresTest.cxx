@@ -22,11 +22,22 @@
 */
 
 #include "ExtremeMeasures.hpp"
+#include "PrettyPrint.hpp"
+// 3rd party
+#include "boost/math/distributions.hpp"
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 // std lib
-#include <vector>
 #include <numeric>
+#include <vector>
+
+using namespace ejd;
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Lattice Point Tests
+//
+//////////////////////////////////////////////////////////////////////////////
 
 struct LatticePointTest : public ::testing::Test 
 {
@@ -35,12 +46,26 @@ struct LatticePointTest : public ::testing::Test
 };
 
 // comparison operators
-TEST_F(LatticePointTest, Comparison_Op_1) {
-    ejd::LatticePoint p1(normal_vec);
-    ejd::LatticePoint p2(shorter_vec);
+TEST_F(LatticePointTest, COMPARISON_OP_1) {
+    LatticePoint p1(normal_vec);
+    LatticePoint p2(shorter_vec);
 
     EXPECT_EQ(p1==p2, false);
     EXPECT_EQ(p1<p2, false);
+}
+
+TEST_F(LatticePointTest, COMPARISON_OP_2) {
+    LatticePoint p1({1,2,3,4});
+    LatticePoint p2({1,3,3,4});
+
+    EXPECT_EQ(p1<p2, true);
+}
+
+TEST_F(LatticePointTest, COMPARISON_OP_3) {
+    LatticePoint p1({1,2,3,4});
+    LatticePoint p2({1,3,4,5});
+
+    EXPECT_EQ(p1<p2, true);
 }
 
 // test apply_cumsum functionality
@@ -76,6 +101,25 @@ TEST_F(LatticePointTest, ADJACENT_DIFFS) {
 
     EXPECT_THAT(differences,result_differences);
 }
+
+// TODO: implement test for sorting lattice points (from a real outputted support)
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Extreme Measure Tests
+//
+//////////////////////////////////////////////////////////////////////////////
+
+TEST(ExtremeMeasureTest, Construct_Poisson_ExtremeMeasure)
+{
+    auto poisson_2d_em = construct_Poisson_ExtremeMeasures({3,5});
+
+    PrettyPrint(poisson_2d_em);
+
+    ASSERT_TRUE(true);
+}
+
+// test that em::dimension returns the correct thing// test that monotonestruct.size() == support.size()
 
 int main(int argc, char **argv)
 {

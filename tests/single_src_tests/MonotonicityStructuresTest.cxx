@@ -35,7 +35,7 @@ for (int i = 2; i <= 10; ++i) {
 }
 
 for (const auto& e : ms) {
-    std::cout << e.extremePts_ << "\n";
+    std::cout << e.extremePts << "\n";
 }
 
 return 0;

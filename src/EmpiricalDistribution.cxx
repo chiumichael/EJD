@@ -49,7 +49,7 @@ void edit_sum_1(std::vector<double> * v_ptr) {
 	v[v_size-1] = 1 - sum_n_minus_1;
 }
 
-bool valid_emp_distr(std::vector<double> p, double errtol) {
+bool valid_emp_distr(const std::vector<double>& p, double errtol) {
 	
 	double sum;
 	std::for_each(p.begin(), p.end(),
@@ -66,6 +66,12 @@ bool valid_emp_distr(std::vector<double> p, double errtol) {
 // Empirical Distribution 
 //
 //////////////////////////////////////////////////////////////////////////////
+
+// TODO : finish me!
+bool EmpiricalDistribution::operator==(const EmpiricalDistribution &rhs) const {
+	return std::equal(this->weights.begin(), this->weights.end(),rhs.weights.begin(), rhs.weights.end()) 
+		&& std::equal(this->support.begin(), this->support.end(),rhs.support.begin(), rhs.support.end());
+}
 
 double EmpiricalDistribution::mean() const {
 	return discrete_empirical_mean(weights,support);
@@ -96,6 +102,10 @@ double EmpiricalDistribution::entropy() const {
 // Empirical Distribution Array 
 //
 //////////////////////////////////////////////////////////////////////////////
+
+bool EmpDistrArray::operator==(const EmpDistrArray& rhs) const {
+	return std::equal(this->marginals.begin(), this->marginals.end(),rhs.marginals.begin(), rhs.marginals.end());
+}
 
 std::vector<double> EmpDistrArray::means() const {
 	std::vector<double> means(marginals.size(),0.);
@@ -131,7 +141,7 @@ int EmpDistrArray::dimensions() const {
 	return marginals.size();
 }
 
-EmpDistrArray construct_EmpDistrArray(std::vector<bm::poisson> poisson_distrs) 
+EmpDistrArray construct_EmpDistrArray(const std::vector<bm::poisson>& poisson_distrs) 
 {
 	std::vector<EmpiricalDistribution> emp_distr_data;
 
@@ -151,5 +161,15 @@ EmpDistrArray construct_EmpDistrArray(std::vector<bm::poisson> poisson_distrs)
 	return EmpDistrArray(emp_distr_data);
 }
 
+EmpDistrArray construct_Poisson_EmpDistrArray(const std::vector<int>& intensities)
+{
+	std::vector<boost::math::poisson> poiss_distrs;
+	poiss_distrs.reserve(intensities.size());
+
+	for (const auto & e : intensities) {
+		poiss_distrs.emplace_back(boost::math::poisson(e));
+	}
+	return construct_EmpDistrArray(poiss_distrs);
+}
 // namespace ejd
 }

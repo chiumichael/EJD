@@ -25,6 +25,8 @@
 #include <iostream>
 #include <string>
 
+// TODO : PrettyPrint with precision
+
 template <typename T>
 void PrettyPrint (const std::vector<T> v, bool vertical=false) {
 

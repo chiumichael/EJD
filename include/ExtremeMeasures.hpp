@@ -26,6 +26,8 @@
 #include <Eigen/Core>
 // stl
 #include <algorithm>
+#include <cassert>
+#include <numeric>
 #include <vector>
 
 namespace ejd {
@@ -40,40 +42,120 @@ struct EmpDistrArray;
 //
 //////////////////////////////////////////////////////////////////////////////
 
-struct MonotonicityStructure {
-	explicit MonotonicityStructure(const int dim);
+struct MonotonicityStructure
+{
+	Eigen::MatrixXi extremePts;
+    explicit MonotonicityStructure(const int dim);
 	int num_extremepts() const;
-	Eigen::MatrixXi extremePts_;
+    std::pair<int,int> size() const;
+    std::vector<int> operator[](int col) const;
 };
 
+std::ostream& operator<<(std::ostream& os, const MonotonicityStructure& ms);
+
 //////////////////////////////////////////////////////////////////////////////
 //
-// Extreme Measures
+// LatticePoint
 //
 //////////////////////////////////////////////////////////////////////////////
 
-struct LatticePoint {
-    std::vector<int> point_;
+// note : multidimensional
+// TODO : implement a span for views into point for marginalization
+struct LatticePoint 
+{
+    std::vector<int> point;
     // comparison operators 
     bool operator==(const LatticePoint & y) const;
     bool operator<(const LatticePoint & y) const;
     // constructors
     LatticePoint(const std::vector<int> point) 
-        : point_(std::move(point))
+        : point(std::move(point))
     {}
+    // methods
+    int dimensions() const;
+    int product() const;
 };
 
 std::ostream& operator<<(std::ostream& os, const LatticePoint& point);
 
-struct ExtremeMeasure
+//////////////////////////////////////////////////////////////////////////////
+//
+// Discrete Measure
+//
+//////////////////////////////////////////////////////////////////////////////
+
+struct DiscreteMeasure 
 {
     std::vector<LatticePoint> support;
     std::vector<double> weights;
-    std::vector<int> monotone_structure;
+    // operators
+    DiscreteMeasure operator+(const DiscreteMeasure& other_dm);
+    DiscreteMeasure& operator+=(const DiscreteMeasure& other_dm);
     // methods
-    ExtremeMeasure operator+() const;
-    int dimension() const;
+    int dimension() const noexcept;
+    int size() const noexcept;
+    // ExtremeMeasure marginalize(const std::vector<int> to_marginalize_out) const;
+protected:
+    void sort() noexcept;
 };
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Extreme Measure
+//
+//////////////////////////////////////////////////////////////////////////////
+
+// TODO : move elsewhere...
+template <typename T>
+std::vector<size_t> sort_indices(const std::vector<T>& v) {
+    // original indices
+    std::vector<size_t> idx(v.size());
+    std::iota(std::begin(idx), std::end(idx), 0);
+
+    // sort 
+    std::sort(
+        std::begin(idx), std::end(idx),
+        [&v] (size_t i1, size_t i2) {
+            return v[i1] < v[i2];
+        }
+    );
+    return idx;
+}
+
+// O(n) time and O(1) algorithm to reorder given target indices
+template <typename T>
+void reorder(std::vector<T>& v, std::vector<size_t>& index)
+{
+    assert(v.size() == index.size());
+    for(int i = 0; i < index.size(); ++i) 
+    {
+        while(index[i] != i) {
+            size_t this_index = index[i];
+            int old_index = index[this_index];
+            T old_value = v[this_index];
+            
+            v[this_index] = v[i];
+            index[this_index] = index[i];
+
+            index[i] = old_index;
+            v[i] = old_value;
+        }
+    }
+}
+
+// TODO : implement move and copy constructors
+// multidimensional
+struct ExtremeMeasure : public DiscreteMeasure
+{
+    std::vector<int> monotone_structure;
+    ExtremeMeasure marginalize(const std::vector<int>& to_marginalize_out) const;
+private:
+    void sort() noexcept;
+};
+
+std::ostream& operator<<(std::ostream& os, const ExtremeMeasure& em);
+
+std::vector<ExtremeMeasure> construct_Poisson_ExtremeMeasures(const std::vector<int>& intensities);
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -116,7 +198,7 @@ std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
 }
 
 template <typename T>
-std::vector<T> flip_vectors(const std::vector<T> vector_to_flip, const std::vector<int> flip_indicator) 
+std::vector<T> flip_vectors(const std::vector<T>& vector_to_flip, const std::vector<int>& flip_indicator)
 {
     std::vector<T> flipped_vector;
 
@@ -132,12 +214,12 @@ std::vector<T> flip_vectors(const std::vector<T> vector_to_flip, const std::vect
 }
 
 std::vector<std::vector<double>> flip_EmpDistrArray_CDF(
-    const std::vector<EmpiricalDistribution> marginal_pdfs,
-    const std::vector<int> monotone_struture);
+    const std::vector<EmpiricalDistribution>& marginal_pdfs,
+    const std::vector<int>& monotone_struture);
 
 std::vector<std::vector<double>> flip_supports(
-    const std::vector<EmpiricalDistribution> marginal_pdfs,
-    const std::vector<int> monotone_structs);
+    const std::vector<EmpiricalDistribution>& marginal_pdfs,
+    const std::vector<int>& monotone_structs);
 
 void ensure_right_tail(std::vector<double> * prob_distr_);
 
