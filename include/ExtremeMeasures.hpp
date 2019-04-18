@@ -160,7 +160,7 @@ using ExtremeMeasures = std::vector<ExtremeMeasure>;
 
 std::ostream& operator<<(std::ostream& os, const ExtremeMeasure& em);
 
-ExtremeMeasures construct_Poisson_ExtremeMeasures(const std::vector<int>& intensities);
+ExtremeMeasures construct_Poisson_ExtremeMeasures(const std::vector<double>& intensities);
 
 //////////////////////////////////////////////////////////////////////////////
 //

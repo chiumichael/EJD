@@ -161,7 +161,7 @@ EmpDistrArray construct_EmpDistrArray(const std::vector<bm::poisson>& poisson_di
 	return EmpDistrArray(emp_distr_data);
 }
 
-EmpDistrArray construct_Poisson_EmpDistrArray(const std::vector<int>& intensities)
+EmpDistrArray construct_Poisson_EmpDistrArray(const std::vector<double>& intensities)
 {
 	std::vector<boost::math::poisson> poiss_distrs;
 	poiss_distrs.reserve(intensities.size());

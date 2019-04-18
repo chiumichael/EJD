@@ -155,7 +155,7 @@ struct EmpDistrArray
 EmpDistrArray construct_EmpDistrArray(const std::vector<bm::poisson>& poisson_distrs);
 
 // convenience function since Poisson distribution used widely
-EmpDistrArray construct_Poisson_EmpDistrArray(const std::vector<int>& intensities);
+EmpDistrArray construct_Poisson_EmpDistrArray(const std::vector<double>& intensities);
 
 // namespace ejd
 }

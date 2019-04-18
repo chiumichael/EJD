@@ -25,6 +25,7 @@
 #include "Correlation.hpp"
 #include "PrettyPrint.hpp"
 
+#include <fmt/core.h>
 #include "gtest/gtest.h"
 
 using namespace ejd;
@@ -72,6 +73,13 @@ TEST_F(PoissonCorrelationTest2d, BivariateExpectation_TEST) {
 
     EXPECT_NEAR(pem1_corr, 0.9767785568527073,1e-3);
     EXPECT_NEAR(pem2_corr, -0.9387482567435699,1e-3);
+}
+
+TEST(Poiss_correlation_bounds_2d, Poiss_correlation_bounds_2d) {
+    auto bounds = ejd::poiss_correlation_bounds_2d(3,5);
+
+    EXPECT_NEAR(bounds.first, 0.9767785568527073,1e-3);
+    EXPECT_NEAR(bounds.second, -0.9387482567435699,1e-3);
 }
 
 int main(int argc, char **argv)

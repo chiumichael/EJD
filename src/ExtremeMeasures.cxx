@@ -272,7 +272,7 @@ std::ostream& operator<<(std::ostream& os, const ExtremeMeasure& em)
 }
 
 // convenience function
-ExtremeMeasures construct_Poisson_ExtremeMeasures(const std::vector<int>& intensities)
+ExtremeMeasures construct_Poisson_ExtremeMeasures(const std::vector<double>& intensities)
 {
 	// construct EmpDistrArray
 	auto poiss_emdistr_array = construct_Poisson_EmpDistrArray(intensities);

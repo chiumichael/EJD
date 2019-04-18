@@ -94,9 +94,12 @@ std::pair<double,double> poiss_correlation_bounds_2d(const double intensity1, co
     // Steps
     // calculate correlations corresponding to desired extreme measures -> returns [min_corr, max_corr]
     //
-    // auto poisson_2d_ems = construct_Poisson_ExtremeMeasures({intensity1,intensity2});
+    auto poisson_2d_ems = construct_Poisson_ExtremeMeasures({intensity1,intensity2});
 
-    return std::make_pair(0.0, 0.0);
+    const double max_corr = correlation(poisson_2d_ems[0]);
+    const double min_corr = correlation(poisson_2d_ems[1]);
+
+    return std::make_pair(max_corr, min_corr);
 }
 
 // namespace ejd

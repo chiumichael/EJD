@@ -59,7 +59,7 @@ struct EmpDistrTests : public ::testing::Test {
 
 struct EmpDistrArrayTests : public ::testing::Test 
 {
-    std::vector<int> poisson_params {3,5,7,9};
+    std::vector<double> poisson_params {3,5,7,9};
     std::vector<boost::math::poisson> poisson_distrs;
     EmpDistrArray empdistrarray_poiss;
 
