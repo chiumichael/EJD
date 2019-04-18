@@ -61,7 +61,7 @@ std::ostream& operator<<(std::ostream& os, const MonotonicityStructure& ms);
 
 // note : multidimensional
 // TODO : implement a span for views into point for marginalization
-struct LatticePoint 
+struct LatticePoint  
 {
     std::vector<int> point;
     // comparison operators 
@@ -72,7 +72,7 @@ struct LatticePoint
         : point(std::move(point))
     {}
     // methods
-    int dimensions() const;
+    int dimension() const;
     int product() const;
 };
 
@@ -148,14 +148,19 @@ void reorder(std::vector<T>& v, std::vector<size_t>& index)
 struct ExtremeMeasure : public DiscreteMeasure
 {
     std::vector<int> monotone_structure;
+    std::vector<double> means;
+    std::vector<double> variances;
     ExtremeMeasure marginalize(const std::vector<int>& to_marginalize_out) const;
 private:
     void sort() noexcept;
 };
 
+// typedefs
+using ExtremeMeasures = std::vector<ExtremeMeasure>;
+
 std::ostream& operator<<(std::ostream& os, const ExtremeMeasure& em);
 
-std::vector<ExtremeMeasure> construct_Poisson_ExtremeMeasures(const std::vector<int>& intensities);
+ExtremeMeasures construct_Poisson_ExtremeMeasures(const std::vector<int>& intensities);
 
 //////////////////////////////////////////////////////////////////////////////
 //

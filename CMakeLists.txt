@@ -54,7 +54,7 @@ add_library(
 	EJD 
 	SHARED
 	src/AnsiColor.cxx
-	#	src/Correlation.cxx
+	src/Correlation.cxx
 	src/EmpiricalDistribution.cxx
 	src/ExtremeMeasures.cxx
 )

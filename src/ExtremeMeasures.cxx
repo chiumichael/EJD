@@ -26,8 +26,6 @@
 #include "EmpiricalDistribution.hpp"
 #include "ExtremeMeasures.hpp"
 #include "PrettyPrint.hpp"
-// 3rd party
-#include "Discreture/Combinations.hpp"
 // std libs
 #include <cmath>
 #include <numeric>
@@ -143,7 +141,7 @@ bool LatticePoint::operator<(const LatticePoint &y) const {
 	return false;
 }
 
-int LatticePoint::dimensions() const {
+int LatticePoint::dimension() const {
 	return point.size();
 }
 
@@ -207,7 +205,7 @@ DiscreteMeasure& DiscreteMeasure::operator+=(const DiscreteMeasure &other_em)
 }
 
 int DiscreteMeasure::dimension() const noexcept{
-	return support[0].dimensions();
+	return support[0].dimension();
 }
 
 int DiscreteMeasure::size() const noexcept {
@@ -226,17 +224,8 @@ void DiscreteMeasure::sort() noexcept {
 //
 //////////////////////////////////////////////////////////////////////////////
 
-// FINISH-ME ?
-// DiscreteMeasure ExtremeMeasure::operator+(const ExtremeMeasure& other_em) const 
-// {
-// 	// note : ExtremeMeasures have to be of the same dimension
-// 	assert(this->dimension() == other_em.dimension());
-
-// 	std::vector<LatticePoint> new_support;
-// }
-
 // FINISH-ME
-ExtremeMeasure ExtremeMeasure::marginalize(const std::vector<int>& to_marginalize_out) const
+ExtremeMeasure ExtremeMeasure::marginalize(const std::vector<int> &to_marginalize_out) const
 {
 	// note : to_marginalize_out contains indices we want to collapse and assumes 0-indexing
 
@@ -275,25 +264,33 @@ std::ostream& operator<<(std::ostream& os, const ExtremeMeasure& em)
 	os << em.support; 
 	os << AnsiColor::green <<"Weights: " << AnsiColor::none << '\n';
 	PrettyPrint(em.weights);
+	os << AnsiColor::green <<"Means: " << AnsiColor::none << '\n';
+	PrettyPrint(em.means);
+	os << AnsiColor::green <<"Variances: " << AnsiColor::none << '\n';
+	PrettyPrint(em.variances);
 	return os;
 }
 
 // convenience function
-
-std::vector<ExtremeMeasure> construct_Poisson_ExtremeMeasures(const std::vector<int>& intensities)
+ExtremeMeasures construct_Poisson_ExtremeMeasures(const std::vector<int>& intensities)
 {
 	// construct EmpDistrArray
 	auto poiss_emdistr_array = construct_Poisson_EmpDistrArray(intensities);
 	const int dim = intensities.size();
 	// generate monotone structures
-	auto ms = MonotonicityStructure(dim);
+	const auto ms = MonotonicityStructure(dim);
 	const int num_ms = ms.num_extremepts();
 
-	std::vector<ExtremeMeasure> ems;
+	ExtremeMeasures ems;
 	ems.reserve(num_ms);
 
 	for (int i = 0; i < num_ms; ++i) {
 		ems.emplace_back( ejd( poiss_emdistr_array, ms[i] ) );
+		for(int j = 0; j < intensities.size(); ++j) {
+			const int this_intensity = intensities[j];
+			ems[i].means.push_back(this_intensity);
+			ems[i].variances.push_back(this_intensity);
+		}
 	}
 	return ems;
 }

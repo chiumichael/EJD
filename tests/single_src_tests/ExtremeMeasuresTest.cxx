@@ -102,21 +102,44 @@ TEST_F(LatticePointTest, ADJACENT_DIFFS) {
     EXPECT_THAT(differences,result_differences);
 }
 
+TEST_F(LatticePointTest, DIMENSIONALITY_TEST) {
+    // construct LatticePoint 1
+    LatticePoint p1({1,2});
+    LatticePoint p2({1,2,3,4,5});
+    EXPECT_EQ(p1.dimension(), 2);
+    EXPECT_EQ(p2.dimension(), 5);
+}
+
 // TODO: implement test for sorting lattice points (from a real outputted support)
 
 //////////////////////////////////////////////////////////////////////////////
 //
-// Extreme Measure Tests
+// 2d Poisson Extreme Measure Tests
 //
 //////////////////////////////////////////////////////////////////////////////
 
-TEST(ExtremeMeasureTest, Construct_Poisson_ExtremeMeasure)
+struct ExtremeMeasureTests : public ::testing::Test 
 {
-    auto poisson_2d_em = construct_Poisson_ExtremeMeasures({3,5});
+    ExtremeMeasures pms;
 
-    PrettyPrint(poisson_2d_em);
+    ExtremeMeasureTests() {
+        pms = construct_Poisson_ExtremeMeasures({3,5});
+    }
+};
 
+TEST_F(ExtremeMeasureTests, Construct_Poisson_ExtremeMeasure)
+{
+    PrettyPrint(pms);
     ASSERT_TRUE(true);
+}
+
+TEST_F(ExtremeMeasureTests, Means_Variance_Test)
+{
+    std::vector params{3.,5.};
+    EXPECT_EQ(pms[0].means, params);
+    EXPECT_EQ(pms[1].means, params);
+    EXPECT_EQ(pms[0].means, pms[0].variances);
+    EXPECT_EQ(pms[1].means, pms[1].variances);
 }
 
 // test that em::dimension returns the correct thing// test that monotonestruct.size() == support.size()

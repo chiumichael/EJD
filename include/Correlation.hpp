@@ -1,3 +1,4 @@
+#pragma once
 /*
     This file is part of EJD.
 
@@ -21,25 +22,41 @@
     DEALINGS IN THE SOFTWARE.
 */
 
-#include "ExtremeMeasures.hpp"
-#include "fmt/core.h"
-#include <iostream>
+#include <utility>
 #include <vector>
 
-int main(int argc, char const *argv[]) {
+namespace ejd {
 
-std::vector<ejd::MonotonicityStructure> ms;
-ms.reserve(9);
+// fwd declarations
+struct LatticePoint;
+struct ExtremeMeasure;
 
-for (int i = 2; i <= 10; ++i) {
-    ms.emplace_back( ejd::MonotonicityStructure(i) );
-}
+namespace detail  {
 
-for (const auto& e : ms) {
-    const std::pair size = e.size();
-    fmt::print("\nCorrelation Space Dimesionality: {}\nNumber Extreme Points: {}\n", size.first, size.second);
-    std::cout << e.extremePts << "\n";
-}
+double bivariate_expectation(std::vector<LatticePoint> support, std::vector<double> weights);
 
-return 0;
+double correlation(std::vector<LatticePoint> support, std::vector<double> weights, double mean, double variance);
+
+}   // namespace detail
+
+double correlation(const ExtremeMeasure& em);
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Extreme Measure 
+//
+//////////////////////////////////////////////////////////////////////////////
+
+std::vector<double> correlations(const ExtremeMeasure & em);
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// 2d Poisson Correlation Bounds
+//
+//////////////////////////////////////////////////////////////////////////////
+
+// returns the [min, max] admissible correlation bounds for a Poisson process with the specified intensities
+std::pair<double,double> poiss_correlation_bounds_2d(const double intensity1, const double intensity2);
+
+// namespace ejd
 }
