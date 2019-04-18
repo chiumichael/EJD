@@ -91,9 +91,6 @@ std::vector<double> correlations(const ExtremeMeasure & em)
 // TODO finish
 std::pair<double,double> poiss_correlation_bounds_2d(const double intensity1, const double intensity2) 
 {
-    // Steps
-    // calculate correlations corresponding to desired extreme measures -> returns [min_corr, max_corr]
-    //
     auto poisson_2d_ems = construct_Poisson_ExtremeMeasures({intensity1,intensity2});
 
     const double max_corr = correlation(poisson_2d_ems[0]);

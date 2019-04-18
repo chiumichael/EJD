@@ -85,8 +85,8 @@ std::vector<int> MonotonicityStructure::operator[](int this_col) const
 {
 	// auto b = extremePts.col(col);
 	auto [m,n] = this->size();
-	std::vector<int> cols_to_return(n);
-	Eigen::VectorXi::Map(&cols_to_return[0],n) = extremePts.col(this_col);
+	std::vector<int> cols_to_return(m);
+	Eigen::VectorXi::Map(&cols_to_return[0],m) = extremePts.col(this_col);
 	return cols_to_return;
 }
 

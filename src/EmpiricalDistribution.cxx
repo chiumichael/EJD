@@ -129,7 +129,7 @@ std::vector<double> EmpDistrArray::variances() const {
 		marginals.begin(),
 		marginals.end(),
 		variances.begin(),
-		[](const EmpiricalDistribution & empdistr) {
+		[] (const EmpiricalDistribution & empdistr) {
 			return empdistr.variance();
 		}
 	);
