@@ -42,7 +42,6 @@ check_ipo_supported(RESULT LTO_supported OUTPUT error)
 
 find_package(
 	Boost 1.67 REQUIRED COMPONENTS
-	filesystem
 )
 
 find_package(Eigen3 REQUIRED)
@@ -57,6 +56,7 @@ add_library(
 	src/Correlation.cxx
 	src/EmpiricalDistribution.cxx
 	src/ExtremeMeasures.cxx
+	src/Symbolic.cxx
 )
 
 target_include_directories(
