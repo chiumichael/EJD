@@ -25,9 +25,6 @@ cmake_minimum_required (VERSION 3.11)
 
 find_package(Eigen3 REQUIRED)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_VERBOSE_MAKEFILE ON)
-
 add_subdirectory(${CMAKE_SOURCE_DIR}/extern/googletest "extern/googletest")
 
 function(build_test SRC_FILE)

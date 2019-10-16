@@ -28,13 +28,12 @@ else()
 	cmake_policy(VERSION 3.11)
 endif()
 
-project (EJD VERSION 0.1)
-
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_MODULE_PATH "/usr/local/share/cmake/Modules")
+
+project (EJD VERSION 0.1)
 
 # LTO
 include(CheckIPOSupported)
