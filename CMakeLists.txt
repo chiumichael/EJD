@@ -28,6 +28,9 @@ else()
 	cmake_policy(VERSION 3.11)
 endif()
 
+##
+## GLOBAL VARIABLES
+##
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -39,14 +42,23 @@ project (EJD VERSION 0.1)
 include(CheckIPOSupported)
 check_ipo_supported(RESULT LTO_supported OUTPUT error)
 
+##
+## INCLUDE
+##
 find_package(
 	Boost 1.67 REQUIRED COMPONENTS
 )
-
 find_package(Eigen3 REQUIRED)
 find_package(fmt REQUIRED)
 
+include(GNUInstallDirs)
+
 add_subdirectory(extern/discreture)
+
+##
+## OPTIONS
+##
+option(EJD_TESTS "Build thes tests" ON)
 
 add_library(
 	EJD 
@@ -55,7 +67,7 @@ add_library(
 	src/Correlation.cxx
 	src/EmpiricalDistribution.cxx
 	src/ExtremeMeasures.cxx
-	src/Symbolic.cxx
+	# src/Symbolic.cxx
 )
 
 target_include_directories(
@@ -63,6 +75,7 @@ target_include_directories(
 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
 	PRIVATE ${Boost_INCLUDE_DIRS}
 	PUBLIC ${EIGEN3_INCLUDE_DIR}
+	PRIVATE ${RANGE-V3_INCLUDE_DIR}
 )
 
 target_link_libraries(
@@ -81,10 +94,12 @@ if(LTO_supported)
 	set_target_properties(EJD PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
-option(EJD_TESTS "Build thes tests" ON)
 if(EJD_TESTS)
 	enable_testing()
 	add_subdirectory(tests)	
 endif()
 
-install (TARGETS EJD DESTINATION bin COMPONENT EJD)
+install(TARGETS EJD)
+
+# old
+#install (TARGETS EJD DESTINATION bin COMPONENT EJD)
