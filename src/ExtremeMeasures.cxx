@@ -22,10 +22,10 @@
 */
 
 #include "AnsiColor.hpp"
-#include "Enumerate.hpp"
+#include "Utils/Enumerate.hpp"
 #include "EmpiricalDistribution.hpp"
 #include "ExtremeMeasures.hpp"
-#include "PrettyPrint.hpp"
+#include "Utils/PrettyPrint.hpp"
 // std libs
 #include <cmath>
 #include <numeric>

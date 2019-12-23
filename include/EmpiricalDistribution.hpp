@@ -22,7 +22,7 @@
     DEALINGS IN THE SOFTWARE.
 */
 
-#include "Zip.hpp"
+#include "Utils/Zip.hpp"
 #include "boost/math/distributions.hpp"		// includes all distributions
 #include <array>
 #include <cmath>

@@ -22,8 +22,8 @@
     DEALINGS IN THE SOFTWARE.
 */
 
-#include "Zip.hpp"
-#include "Range.hpp"
+#include "Utils/Zip.hpp"
+#include "Utils/Range.hpp"
 
 namespace ejd {
 	
