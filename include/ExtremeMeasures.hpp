@@ -23,7 +23,7 @@
 */
 
 // 3rd party
-#include <Eigen/Core>
+#include <blaze/math/DynamicMatrix.h>
 // stl
 #include <algorithm>
 #include <cassert>
@@ -31,6 +31,8 @@
 #include <vector>
 
 namespace ejd {
+
+namespace b = blaze;
 
 // fwd declarations
 struct EmpiricalDistribution;
@@ -44,7 +46,7 @@ struct EmpDistrArray;
 
 struct MonotonicityStructure
 {
-	Eigen::MatrixXi extremePts;
+    b::DynamicMatrix<int> extremePoints;
     explicit MonotonicityStructure(const int dim);
 	int num_extremepts() const;
     std::pair<int,int> size() const;

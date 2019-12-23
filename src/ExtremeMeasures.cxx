@@ -26,6 +26,9 @@
 #include "EmpiricalDistribution.hpp"
 #include "ExtremeMeasures.hpp"
 #include "Utils/PrettyPrint.hpp"
+#include "PrettyPrint.hpp"
+// 3rd party libs
+#include <blaze/math/Column.h>
 // std libs
 #include <cmath>
 #include <numeric>
@@ -39,60 +42,98 @@ namespace ejd {
 //////////////////////////////////////////////////////////////////////////////
 
 // TODO : implement the non-recursive version
-static Eigen::MatrixXi construct_monotonestruct(const int n)
-{
-	if (n == 2)
-	{
-		Eigen::Matrix2i ms_2d;	
-		ms_2d << 1,1,
-			  1,-1;
-		return ms_2d;
-	}
-	else
-	{
-		Eigen::MatrixXi lower_ms = construct_monotonestruct(n-1);
+// static Eigen::MatrixXi construct_monotonestruct(const int n)
+// {
+// 	if (n == 2)
+// 	{
+// 		Eigen::Matrix2i ms_2d;
+// 		ms_2d << 1,1,
+// 			  1,-1;
+// 		return ms_2d;
+// 	}
+// 	else
+// 	{
+// 		Eigen::MatrixXi lower_ms = construct_monotonestruct(n-1);
 
-		int num_columns_ms = ::std::pow(2,n-1);
+// 		int num_columns_ms = ::std::pow(2,n-1);
 
-		Eigen::MatrixXi this_ms;
-		this_ms.resize(n, num_columns_ms);
+// 		Eigen::MatrixXi this_ms;
+// 		this_ms.resize(n, num_columns_ms);
 
-		Eigen::RowVectorXi v_ones(num_columns_ms);
-		Eigen::RowVectorXi v_ones_lower(lower_ms.cols());
-		v_ones_lower.setOnes();
-		v_ones << v_ones_lower, v_ones_lower*-1;
+// 		Eigen::RowVectorXi v_ones(num_columns_ms);
+// 		Eigen::RowVectorXi v_ones_lower(lower_ms.cols());
+// 		v_ones_lower.setOnes();
 
-		this_ms << lower_ms, lower_ms, v_ones;
+// 		v_ones << v_ones_lower, v_ones_lower*-1;
 
-		return this_ms;
-	}
-};
+// 		this_ms << lower_ms, lower_ms, v_ones;
 
-MonotonicityStructure::MonotonicityStructure(const int dim) 
-{
-	this->extremePts = construct_monotonestruct(dim);
+// 		return this_ms;
+// 	}
+// };
+
+// static b::DynamicMatrix<int> construct_monotonestruct(const int n)
+// {
+// 	if (n == 2) {
+// 		b::DynamicMatrix<int> ms_2d(2UL,2UL);
+// 		// ms_2d(0,0) = 1;
+// 		// ms_2d(0,1) = 1;
+// 		// ms_2d(1,0) = 1;
+// 		// ms_2d(1,1) = -1;
+// 		// return ms_2d;
+// 		ms_2d = { {1,1}, {1,-1} };
+// 		return ms_2d;
+// 	}
+// 	else {
+// 		b::DynamicMatrix<int> lower_ms = construct_monotonestruct(n-1);
+
+// 		int num_columns_ms = ::std::pow(2,n-1);
+
+// 		b::DynamicMatrix<int> this_ms(n, num_columns_ms);
+
+// 		b::DynamicVector<int, b::rowVector> ones(lower_ms.columns());
+// 		b::DynamicVector<int, b::rowVector> ones_lower(lower_ms.columns(),1);	
+
+// 		return lower_ms; // TODO : FIXME: this is wrong but here so it compiles
+// 	}
+// }
+
+
+static b::DynamicMatrix<int> construct_monotonestruct(const int n) {
+	
+	b::DynamicMatrix<int> ms;
+}
+
+MonotonicityStructure::MonotonicityStructure(const int dim) {
+	this->extremePoints = construct_monotonestruct(dim);
 }
 
 int MonotonicityStructure::num_extremepts() const {
-	return this->extremePts.cols();
+	return this->extremePoints.columns();
 }
 
 std::pair<int, int> MonotonicityStructure::size() const {
-	return std::pair(extremePts.rows(),extremePts.cols());	
+	return std::pair(extremePoints.rows(),extremePoints.columns());	
 }
  
+// TODO : FIXME
 std::vector<int> MonotonicityStructure::operator[](int this_col) const
 {
-	// auto b = extremePts.col(col);
-	auto [m,n] = this->size();
-	std::vector<int> cols_to_return(m);
-	Eigen::VectorXi::Map(&cols_to_return[0],m) = extremePts.col(this_col);
-	return cols_to_return;
+	return {1,1,1};
 }
+
+// std::vector<int> MonotonicityStructure::operator[](int this_col) const
+// {
+// 	// auto b = extremePts.col(col);
+// 	auto [m,n] = this->size();
+// 	std::vector<int> cols_to_return(m);
+// 	Eigen::VectorXi::Map(&cols_to_return[0],m) = extremePoints.col(this_col);
+// 	return cols_to_return;
+// }
 
 std::ostream& operator<<(std::ostream& os, const MonotonicityStructure& ms) 
 {
-	os << ms.extremePts;
+	os << ms.extremePoints;
 	return os;
 }
 
@@ -251,7 +292,7 @@ ExtremeMeasure ExtremeMeasure::marginalize(const std::vector<int> &to_marginaliz
 	auto updated_ms = monotone_structure;
 
 	// marginalized support
-	// marginalized weights
+	// marginalized weightsa
 }
 
 std::ostream& operator<<(std::ostream& os, const ExtremeMeasure& em) 

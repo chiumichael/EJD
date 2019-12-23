@@ -35,10 +35,11 @@ for (int i = 2; i <= 10; ++i) {
     ms.emplace_back( ejd::MonotonicityStructure(i) );
 }
 
+// TODO: implement tests properly
 for (const auto& e : ms) {
     const std::pair size = e.size();
     fmt::print("\nCorrelation Space Dimesionality: {}\nNumber Extreme Points: {}\n", size.first, size.second);
-    std::cout << e.extremePts << "\n";
+    std::cout << e.extremePoints << "\n";
 }
 
 return 0;
