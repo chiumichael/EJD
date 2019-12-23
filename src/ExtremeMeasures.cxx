@@ -26,7 +26,6 @@
 #include "EmpiricalDistribution.hpp"
 #include "ExtremeMeasures.hpp"
 #include "Utils/PrettyPrint.hpp"
-#include "PrettyPrint.hpp"
 // 3rd party libs
 #include <blaze/math/Column.h>
 // std libs
