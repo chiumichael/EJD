@@ -21,8 +21,8 @@
     DEALINGS IN THE SOFTWARE.
 */
 
-#include "Enumerate.hpp"
-#include "PrettyPrint.hpp"
+#include "Utils/Enumerate.hpp"
+#include "Utils/PrettyPrint.hpp"
 #include "EmpiricalDistribution.hpp"
 #include "ExtremeMeasures.hpp"
 // boost

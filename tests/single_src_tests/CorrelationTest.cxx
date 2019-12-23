@@ -23,7 +23,7 @@
 
 #include "ExtremeMeasures.hpp"
 #include "Correlation.hpp"
-#include "PrettyPrint.hpp"
+#include "Utils/PrettyPrint.hpp"
 
 #include <fmt/core.h>
 #include "gtest/gtest.h"

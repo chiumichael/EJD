@@ -22,7 +22,7 @@
 */
 
 #include "ExtremeMeasures.hpp"
-#include "PrettyPrint.hpp"
+#include "Utils/PrettyPrint.hpp"
 // 3rd party
 #include "boost/math/distributions.hpp"
 #include "gtest/gtest.h"
