@@ -28,7 +28,6 @@
 #include "Utils/PrettyPrint.hpp"
 // std libs
 #include <cmath>
-#include <numeric>
 
 namespace ejd {
 
