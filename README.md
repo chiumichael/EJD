@@ -8,6 +8,7 @@ This library provides a C++ implementation of the Extreme Joint Distribution (EJ
 - Eigen3
 - Boost 1.67+ (relies on Boost.Math)
 - [Discreture](https://github.com/mraggi/discreture)
+- [fmt]{https://github.com/fmtlib/fmt}
 
 ### Build
 The usual CMake build procedure
