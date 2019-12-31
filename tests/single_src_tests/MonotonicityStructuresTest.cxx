@@ -22,25 +22,84 @@
 */
 
 #include "ExtremeMeasures.hpp"
-#include "fmt/core.h"
+// 3rd party
+#include "gtest/gtest.h"
+// std lib
 #include <iostream>
-#include <vector>
 
-int main(int argc, char const *argv[]) {
+TEST(MonotonicityStructure, SIZE_TEST_n_2) {
+    auto size = ejd::monotoneStructSize(2);
+    
+    EXPECT_EQ(
+        size.first,
+        2
+    );
 
-std::vector<ejd::MonotonicityStructure> ms;
-ms.reserve(9);
-
-for (int i = 2; i <= 10; ++i) {
-    ms.emplace_back( ejd::MonotonicityStructure(i) );
+    EXPECT_EQ(
+        size.second,
+        2
+    );
 }
 
-// TODO: implement tests properly
-for (const auto& e : ms) {
-    const std::pair size = e.size();
-    fmt::print("\nCorrelation Space Dimesionality: {}\nNumber Extreme Points: {}\n", size.first, size.second);
-    std::cout << e.extremePoints << "\n";
+TEST(MonotonicityStructure, SIZE_TEST_n_3) {
+    auto size = ejd::monotoneStructSize(3);
+
+    EXPECT_EQ(
+        size.first,
+        3
+    );
+
+    EXPECT_EQ(
+        size.second,
+        4
+    );
 }
 
-return 0;
+TEST(MonotonicityStructure, SIZE_TEST_n_4) {
+    auto size = ejd::monotoneStructSize(4);
+
+    EXPECT_EQ(
+        size.first,
+        4
+    );
+
+    EXPECT_EQ(
+        size.second,
+        8
+    );
+}
+
+TEST(MonotonicityStructure, SIZE_TEST_n_5) {
+    auto size = ejd::monotoneStructSize(5);
+
+    EXPECT_EQ(
+        size.first,
+        5
+    );
+
+    EXPECT_EQ(
+        size.second,
+        16
+    );
+}
+
+TEST(MonotonicityStructure, 3d) {
+    auto b = ejd::constructMonotoneStructure(3);
+
+    std::cout << b << std::endl;
+
+    EXPECT_TRUE(true);
+}
+
+TEST(MonotonicityStructure, 4d) {
+    auto b = ejd::constructMonotoneStructure(4);
+
+    std::cout << b << std::endl;
+
+    EXPECT_TRUE(true);
+}
+
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

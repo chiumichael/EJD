@@ -27,12 +27,18 @@
 #include "ExtremeMeasures.hpp"
 #include "Utils/PrettyPrint.hpp"
 // 3rd party libs
-#include <blaze/math/Column.h>
+#include <blaze/math/DynamicMatrix.h>
+#include <blaze/math/Submatrix.h>
 // std libs
 #include <cmath>
 #include <numeric>
 
 namespace ejd {
+
+using MatrixType = blaze::DynamicMatrix<int>;
+// using SubmatrixType = decltype( blaze::submatrix<3UL,0UL,4UL,8UL>( std::declval<MatrixType>() ) );
+
+using SubmatrixType = blaze::Submatrix<blaze::DynamicMatrix<int, false>, blaze::unaligned, false, true>;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -40,71 +46,77 @@ namespace ejd {
 //
 //////////////////////////////////////////////////////////////////////////////
 
-// TODO : implement the non-recursive version
-// static Eigen::MatrixXi construct_monotonestruct(const int n)
-// {
-// 	if (n == 2)
-// 	{
-// 		Eigen::Matrix2i ms_2d;
-// 		ms_2d << 1,1,
-// 			  1,-1;
-// 		return ms_2d;
-// 	}
-// 	else
-// 	{
-// 		Eigen::MatrixXi lower_ms = construct_monotonestruct(n-1);
+std::pair<int,int> monotoneStructSize(const int n) {
+	return {n,std::pow(2,n-1)};
+}
 
-// 		int num_columns_ms = ::std::pow(2,n-1);
+static void fillMonotoneStructure(SubmatrixType& ms) {
+	// key to an efficient implementation is memoization
+	if (ms.rows() == 2) {
+		// columns also = 2
+		ms(0,0) = 1;
+		ms(0,1) = 1;
+		ms(1,0) = 1;
+		ms(1,1) = -1;
+	} else {
+		int nRows = ms.rows();
+		int nCols = ms.columns();
 
-// 		Eigen::MatrixXi this_ms;
-// 		this_ms.resize(n, num_columns_ms);
+		// note: maybe these should be better named
+		int lMatrixStart = 0;
+		int rMatrixStart = nCols / 2;	// always even
 
-// 		Eigen::RowVectorXi v_ones(num_columns_ms);
-// 		Eigen::RowVectorXi v_ones_lower(lower_ms.cols());
-// 		v_ones_lower.setOnes();
+		int rowStride = nRows - 1;
+		int colStride = nCols / 2;
 
-// 		v_ones << v_ones_lower, v_ones_lower*-1;
+		auto left_sm = b::submatrix(
+			ms, 
+			lMatrixStart, lMatrixStart,
+			rowStride, colStride
+		);
 
-// 		this_ms << lower_ms, lower_ms, v_ones;
+		fillMonotoneStructure(left_sm);
 
-// 		return this_ms;
-// 	}
-// };
+		auto right_sm = b::submatrix(
+			ms,
+			0, rMatrixStart,
+			rowStride, colStride
+		);
 
-// static b::DynamicMatrix<int> construct_monotonestruct(const int n)
-// {
-// 	if (n == 2) {
-// 		b::DynamicMatrix<int> ms_2d(2UL,2UL);
-// 		// ms_2d(0,0) = 1;
-// 		// ms_2d(0,1) = 1;
-// 		// ms_2d(1,0) = 1;
-// 		// ms_2d(1,1) = -1;
-// 		// return ms_2d;
-// 		ms_2d = { {1,1}, {1,-1} };
-// 		return ms_2d;
-// 	}
-// 	else {
-// 		b::DynamicMatrix<int> lower_ms = construct_monotonestruct(n-1);
+		right_sm = left_sm;
 
-// 		int num_columns_ms = ::std::pow(2,n-1);
+		// bottom rows;
+		auto leftBottomRow = submatrix(
+			ms,
+			nRows-1,0,
+			1, colStride
+		);
+		auto rightBottomRow = submatrix(
+			ms,
+			nRows-1, colStride,
+			1, colStride
+		);
 
-// 		b::DynamicMatrix<int> this_ms(n, num_columns_ms);
+		leftBottomRow = 1;
+		rightBottomRow = -1;
+	}
+}
 
-// 		b::DynamicVector<int, b::rowVector> ones(lower_ms.columns());
-// 		b::DynamicVector<int, b::rowVector> ones_lower(lower_ms.columns(),1);	
-
-// 		return lower_ms; // TODO : FIXME: this is wrong but here so it compiles
-// 	}
-// }
-
-
-static b::DynamicMatrix<int> construct_monotonestruct(const int n) {
-	
-	b::DynamicMatrix<int> ms;
+// TODO: FINISH-ME
+b::DynamicMatrix<int> constructMonotoneStructure(const int n) {
+	std::pair<int, int> ms_size = monotoneStructSize(n);
+	b::DynamicMatrix<int> ms(ms_size.first, ms_size.second);
+	auto submatrixView = b::submatrix(
+		ms,
+		0,0,
+		ms.rows(), ms.columns()
+	);
+	fillMonotoneStructure(submatrixView);
+	return ms;
 }
 
 MonotonicityStructure::MonotonicityStructure(const int dim) {
-	this->extremePoints = construct_monotonestruct(dim);
+	this->extremePoints = constructMonotoneStructure(dim);
 }
 
 int MonotonicityStructure::num_extremepts() const {

@@ -44,6 +44,10 @@ struct EmpDistrArray;
 //
 //////////////////////////////////////////////////////////////////////////////
 
+b::DynamicMatrix<int> constructMonotoneStructure(const int n);
+
+std::pair<int, int> monotoneStructSize(const int n);
+
 struct MonotonicityStructure
 {
     b::DynamicMatrix<int> extremePoints;
