@@ -35,9 +35,6 @@
 
 namespace ejd {
 
-using MatrixType = blaze::DynamicMatrix<int>;
-// using SubmatrixType = decltype( blaze::submatrix<3UL,0UL,4UL,8UL>( std::declval<MatrixType>() ) );
-
 using SubmatrixType = blaze::Submatrix<blaze::DynamicMatrix<int, false>, blaze::unaligned, false, true>;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -51,7 +48,6 @@ std::pair<int,int> monotoneStructSize(const int n) {
 }
 
 static void fillMonotoneStructure(SubmatrixType& ms) {
-	// key to an efficient implementation is memoization
 	if (ms.rows() == 2) {
 		// columns also = 2
 		ms(0,0) = 1;
