@@ -26,10 +26,14 @@
 #include "EmpiricalDistribution.hpp"
 #include "ExtremeMeasures.hpp"
 #include "Utils/PrettyPrint.hpp"
+// 3rd party libs
+#include <blaze/math/Submatrix.h>
 // std libs
 #include <cmath>
 
 namespace ejd {
+
+using SubmatrixType = blaze::Submatrix<blaze::DynamicMatrix<int, false>, blaze::unaligned, false, true>;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -37,61 +41,102 @@ namespace ejd {
 //
 //////////////////////////////////////////////////////////////////////////////
 
-// TODO : implement the non-recursive version
-static Eigen::MatrixXi construct_monotonestruct(const int n)
-{
-	if (n == 2)
-	{
-		Eigen::Matrix2i ms_2d;	
-		ms_2d << 1,1,
-			  1,-1;
-		return ms_2d;
+std::pair<int,int> monotoneStructSize(const int n) {
+	return {n,std::pow(2,n-1)};
+}
+
+static void fillMonotoneStructure(SubmatrixType& ms) {
+	if (ms.rows() == 2) {
+		// columns also = 2
+		ms(0,0) = 1;
+		ms(0,1) = 1;
+		ms(1,0) = 1;
+		ms(1,1) = -1;
+	} else {
+		int nRows = ms.rows();
+		int nCols = ms.columns();
+
+		// note: maybe these should be better named
+		int lMatrixStart = 0;
+		int rMatrixStart = nCols / 2;	// always even
+
+		int rowStride = nRows - 1;
+		int colStride = nCols / 2;
+
+		auto left_sm = b::submatrix(
+			ms, 
+			lMatrixStart, lMatrixStart,
+			rowStride, colStride
+		);
+
+		fillMonotoneStructure(left_sm);
+
+		auto right_sm = b::submatrix(
+			ms,
+			0, rMatrixStart,
+			rowStride, colStride
+		);
+
+		right_sm = left_sm;
+
+		// bottom rows;
+		auto leftBottomRow = submatrix(
+			ms,
+			nRows-1,0,
+			1, colStride
+		);
+		auto rightBottomRow = submatrix(
+			ms,
+			nRows-1, colStride,
+			1, colStride
+		);
+
+		leftBottomRow = 1;
+		rightBottomRow = -1;
 	}
-	else
-	{
-		Eigen::MatrixXi lower_ms = construct_monotonestruct(n-1);
+}
 
-		int num_columns_ms = ::std::pow(2,n-1);
+b::DynamicMatrix<int> constructMonotoneStructure(const int n) {
+	std::pair<int, int> ms_size = monotoneStructSize(n);
+	b::DynamicMatrix<int> ms(ms_size.first, ms_size.second);
+	auto submatrixView = b::submatrix(
+		ms,
+		0,0,
+		ms.rows(), ms.columns()
+	);
+	fillMonotoneStructure(submatrixView);
+	return ms;
+}
 
-		Eigen::MatrixXi this_ms;
-		this_ms.resize(n, num_columns_ms);
-
-		Eigen::RowVectorXi v_ones(num_columns_ms);
-		Eigen::RowVectorXi v_ones_lower(lower_ms.cols());
-		v_ones_lower.setOnes();
-		v_ones << v_ones_lower, v_ones_lower*-1;
-
-		this_ms << lower_ms, lower_ms, v_ones;
-
-		return this_ms;
-	}
-};
-
-MonotonicityStructure::MonotonicityStructure(const int dim) 
-{
-	this->extremePts = construct_monotonestruct(dim);
+MonotonicityStructure::MonotonicityStructure(const int dim) {
+	this->extremePoints = constructMonotoneStructure(dim);
 }
 
 int MonotonicityStructure::num_extremepts() const {
-	return this->extremePts.cols();
+	return this->extremePoints.columns();
 }
 
 std::pair<int, int> MonotonicityStructure::size() const {
-	return std::pair(extremePts.rows(),extremePts.cols());	
+	return std::pair(extremePoints.rows(),extremePoints.columns());	
 }
- 
+
+// b::DynamicVector<int> MonotonicityStructure::operator[](int this_col) const
 std::vector<int> MonotonicityStructure::operator[](int this_col) const
 {
-	// auto b = extremePts.col(col);
-	auto [m,n] = this->size();
-	std::vector<int> cols_to_return(m);
-	Eigen::VectorXi::Map(&cols_to_return[0],m) = extremePts.col(this_col);
-	return cols_to_return;
+	// TODO : return native vector eventuallya
+	auto bcol = b::column(this->extremePoints,this_col);
+	std::vector<int> retCol(bcol.size());
+
+	for (size_t i = 0; i < bcol.size(); ++i) {
+		retCol[i] = bcol[i];
+	}
+
+	return retCol;
 }
 
 std::ostream& operator<<(std::ostream& os, const MonotonicityStructure& ms) 
 {
-	os << ms.extremePts;
+	os << ms.extremePoints;
 	return os;
 }
 
@@ -250,7 +295,7 @@ ExtremeMeasure ExtremeMeasure::marginalize(const std::vector<int> &to_marginaliz
 	auto updated_ms = monotone_structure;
 
 	// marginalized support
-	// marginalized weights
+	// marginalized weightsa
 }
 
 std::ostream& operator<<(std::ostream& os, const ExtremeMeasure& em) 

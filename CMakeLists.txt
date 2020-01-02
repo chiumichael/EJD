@@ -48,8 +48,8 @@ check_ipo_supported(RESULT LTO_supported OUTPUT error)
 find_package(
 	Boost 1.67 REQUIRED COMPONENTS
 )
-find_package(Eigen3 REQUIRED)
 find_package(fmt REQUIRED)
+find_package(blaze 3.6 REQUIRED)
 
 include(GNUInstallDirs)
 
@@ -59,6 +59,7 @@ add_subdirectory(extern/discreture)
 ## OPTIONS
 ##
 option(EJD_TESTS "Build thes tests" ON)
+option(USE_LD "Use LLD Linker" OFF)
 
 add_library(
 	EJD 
@@ -67,30 +68,32 @@ add_library(
 	src/Correlation.cxx
 	src/EmpiricalDistribution.cxx
 	src/ExtremeMeasures.cxx
-	# src/Symbolic.cxx
 )
 
 target_include_directories(
 	EJD
-	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
-	PRIVATE ${Boost_INCLUDE_DIRS}
-	PUBLIC ${EIGEN3_INCLUDE_DIR}
-	PRIVATE ${RANGE-V3_INCLUDE_DIR}
+	PUBLIC 
+	${CMAKE_CURRENT_SOURCE_DIR}/include
+	PRIVATE 
+	${Boost_INCLUDE_DIRS}
 )
 
 target_link_libraries(
 	EJD
-	PRIVATE fmt::fmt
-	PRIVATE ${Boost_LIBRARIES}
-	PRIVATE discreture::discreture
+	PRIVATE 
+	fmt::fmt
+	discreture::discreture
+	blaze::blaze
 )
 
+# TODO: improve this
 target_compile_options(
 	EJD
 	PRIVATE "-Wall"
 )
 
 if(LTO_supported)
+	message("LTO Supported")
 	set_target_properties(EJD PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
@@ -101,5 +104,3 @@ endif()
 
 install(TARGETS EJD)
 
-# old
-#install (TARGETS EJD DESTINATION bin COMPONENT EJD)

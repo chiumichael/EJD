@@ -28,7 +28,8 @@
 // boost
 #include "boost/math/distributions.hpp"
 namespace bm = boost::math;
-#include "Eigen/Core"
+// #include "Eigen/Core"
+
 // std libs
 #include <iostream>
 #include <vector>
@@ -94,4 +95,3 @@ int main(int argc, char **argv)
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
-

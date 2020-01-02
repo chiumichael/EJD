@@ -36,7 +36,6 @@ function(build_test SRC_FILE)
 		${target}
 		PRIVATE
 		${CMAKE_SOURCE_DIR}/include
-		${EIGEN3_INCLUDE_DIRS}
 	)
 	target_link_libraries(
 		${target}
@@ -48,6 +47,7 @@ function(build_test SRC_FILE)
 		fmt::fmt
 		${Boost_LIBRARIES}
 		discreture::discreture
+		blaze::blaze
 	)
 	target_compile_options(
 		${target}
