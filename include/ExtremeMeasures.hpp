@@ -23,7 +23,9 @@
 */
 
 // 3rd party
+#include <blaze/math/Column.h>
 #include <blaze/math/DynamicMatrix.h>
+// #include <blaze/math/DynmaicVector.h>
 // stl
 #include <algorithm>
 #include <cassert>
@@ -55,6 +57,7 @@ struct MonotonicityStructure
 	int num_extremepts() const;
     std::pair<int,int> size() const;
     std::vector<int> operator[](int col) const;
+    // b::DynamicVector<int> operator[](int col) const;
 };
 
 std::ostream& operator<<(std::ostream& os, const MonotonicityStructure& ms);

@@ -99,6 +99,8 @@ TEST(MonotonicityStructure, 4d) {
     EXPECT_TRUE(true);
 }
 
+// test column extraction of ms
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

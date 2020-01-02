@@ -24,7 +24,6 @@
 #include "EmpiricalDistribution.hpp"
 // std libs
 #include <algorithm>
-#include <cmath>
 
 namespace ejd {
 

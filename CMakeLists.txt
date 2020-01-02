@@ -50,7 +50,6 @@ find_package(
 )
 find_package(fmt REQUIRED)
 find_package(blaze 3.6 REQUIRED)
-# find_package(range-v3 REQUIRED)
 
 include(GNUInstallDirs)
 
@@ -77,7 +76,6 @@ target_include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 	PRIVATE 
 	${Boost_INCLUDE_DIRS}
-	# ${RANGE-V3_INCLUDE_DIR}
 )
 
 target_link_libraries(
@@ -106,5 +104,3 @@ endif()
 
 install(TARGETS EJD)
 
-# old
-#install (TARGETS EJD DESTINATION bin COMPONENT EJD)

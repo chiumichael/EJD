@@ -27,11 +27,9 @@
 #include "ExtremeMeasures.hpp"
 #include "Utils/PrettyPrint.hpp"
 // 3rd party libs
-#include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/Submatrix.h>
 // std libs
 #include <cmath>
-#include <numeric>
 
 namespace ejd {
 
@@ -98,7 +96,6 @@ static void fillMonotoneStructure(SubmatrixType& ms) {
 	}
 }
 
-// TODO: FINISH-ME
 b::DynamicMatrix<int> constructMonotoneStructure(const int n) {
 	std::pair<int, int> ms_size = monotoneStructSize(n);
 	b::DynamicMatrix<int> ms(ms_size.first, ms_size.second);
@@ -122,21 +119,20 @@ int MonotonicityStructure::num_extremepts() const {
 std::pair<int, int> MonotonicityStructure::size() const {
 	return std::pair(extremePoints.rows(),extremePoints.columns());	
 }
- 
-// TODO : FIXME
+
+// b::DynamicVector<int> MonotonicityStructure::operator[](int this_col) const
 std::vector<int> MonotonicityStructure::operator[](int this_col) const
 {
-	return {1,1,1};
-}
+	// TODO : return native vector eventuallya
+	auto bcol = b::column(this->extremePoints,this_col);
+	std::vector<int> retCol(bcol.size());
 
-// std::vector<int> MonotonicityStructure::operator[](int this_col) const
-// {
-// 	// auto b = extremePts.col(col);
-// 	auto [m,n] = this->size();
-// 	std::vector<int> cols_to_return(m);
-// 	Eigen::VectorXi::Map(&cols_to_return[0],m) = extremePoints.col(this_col);
-// 	return cols_to_return;
-// }
+	for (size_t i = 0; i < bcol.size(); ++i) {
+		retCol[i] = bcol[i];
+	}
+
+	return retCol;
+}
 
 std::ostream& operator<<(std::ostream& os, const MonotonicityStructure& ms) 
 {
