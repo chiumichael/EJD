@@ -3,7 +3,7 @@
 This library provides a C++ implementation of the Extreme Joint Distribution (EJD) algorithm in [1].
 
 ### Dependencies
-- CMake 3.10+
+- CMake 3.15+
 - C++17
 - [Blaze](https://bitbucket.org/blaze-lib/blaze)
 - Boost 1.67+ (relies on Boost.Math)
