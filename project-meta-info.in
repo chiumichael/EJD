@@ -1,0 +1,7 @@
+# project-meta-info.in
+
+set ( project_version 0.1 )
+
+set ( project_description "EJD" )
+
+set ( project_homepage "https://github.com/chiumichael/ejd" )

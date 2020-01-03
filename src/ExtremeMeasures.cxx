@@ -52,7 +52,8 @@ static void fillMonotoneStructure(SubmatrixType& ms) {
 		ms(0,1) = 1;
 		ms(1,0) = 1;
 		ms(1,1) = -1;
-	} else {
+	} 
+	else {
 		int nRows = ms.rows();
 		int nCols = ms.columns();
 

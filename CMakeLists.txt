@@ -19,13 +19,13 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-cmake_minimum_required (VERSION 3.12)
+cmake_minimum_required (VERSION 3.15)
 
-if(${CMAKE_VERSION} VERSION_LESS 3.11)
+if(${CMAKE_VERSION} VERSION_LESS 3.15)
 	message(STATUS "CMAKE_VERSION: ${CMAKE_VERSION}")
 	cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 else()
-	cmake_policy(VERSION 3.11)
+	cmake_policy(VERSION 3.13)
 endif()
 
 ##
@@ -36,7 +36,14 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_MODULE_PATH "/usr/local/share/cmake/Modules")
 
-project (EJD VERSION 0.1)
+# set(CMAKE_PROJECT_INCLUDE_BEFORE "${CMAKE_CURRENT_LIST_DIR}/project-meta-info.in")
+include("${CMAKE_CURRENT_LIST_DIR}/project-meta-info.in")
+
+project(EJD 
+		VERSION ${project_version}
+		DESCRIPTION ${project_description}
+		HOMEPAGE_URL ${project_homepage}
+		LANGUAGES CXX)
 
 # LTO
 include(CheckIPOSupported)
@@ -61,29 +68,27 @@ add_subdirectory(extern/discreture)
 option(EJD_TESTS "Build thes tests" ON)
 option(USE_LD "Use LLD Linker" OFF)
 
-add_library(
-	EJD 
-	SHARED
-	src/AnsiColor.cxx
-	src/Correlation.cxx
-	src/EmpiricalDistribution.cxx
-	src/ExtremeMeasures.cxx
+add_library(EJD SHARED)
+
+target_sources(
+	EJD
+	PRIVATE	src/AnsiColor.cxx
+			src/Correlation.cxx
+			src/EmpiricalDistribution.cxx
+			src/ExtremeMeasures.cxx
 )
 
 target_include_directories(
 	EJD
-	PUBLIC 
-	${CMAKE_CURRENT_SOURCE_DIR}/include
-	PRIVATE 
-	${Boost_INCLUDE_DIRS}
+	PUBLIC	${CMAKE_CURRENT_SOURCE_DIR}/include
+	PRIVATE	${Boost_INCLUDE_DIRS}
 )
 
 target_link_libraries(
 	EJD
-	PRIVATE 
-	fmt::fmt
-	discreture::discreture
-	blaze::blaze
+	PRIVATE fmt::fmt
+			discreture::discreture
+			blaze::blaze
 )
 
 # TODO: improve this

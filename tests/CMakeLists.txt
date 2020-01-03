@@ -21,7 +21,7 @@
 
 project(ejd_tests)
 
-cmake_minimum_required (VERSION 3.11)
+# cmake_minimum_required (VERSION 3.15)
 
 find_package(Eigen3 REQUIRED)
 
@@ -31,23 +31,20 @@ function(build_test SRC_FILE)
 	get_filename_component(src_name_we ${SRC_FILE} NAME_WE)
 	set(target "${src_name_we}")
 	add_executable(${target} ${SRC_FILE})
-	# add_dependencies(${target} gtest) not needed now
 	target_include_directories(
 		${target}
-		PRIVATE
-		${CMAKE_SOURCE_DIR}/include
+		PRIVATE	${CMAKE_SOURCE_DIR}/include
 	)
 	target_link_libraries(
 		${target}
-		PRIVATE
-		EJD
-		gtest
-		gmock
-		gtest_main
-		fmt::fmt
-		${Boost_LIBRARIES}
-		discreture::discreture
-		blaze::blaze
+		PRIVATE	EJD
+				gtest
+				gmock
+				gtest_main
+				fmt::fmt
+				${Boost_LIBRARIES}
+				discreture::discreture
+				blaze::blaze
 	)
 	target_compile_options(
 		${target}
