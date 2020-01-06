@@ -21,10 +21,6 @@
 
 project(ejd_tests)
 
-# cmake_minimum_required (VERSION 3.15)
-
-find_package(Eigen3 REQUIRED)
-
 add_subdirectory(${CMAKE_SOURCE_DIR}/extern/googletest "extern/googletest")
 
 function(build_test SRC_FILE)
