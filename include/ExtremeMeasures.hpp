@@ -25,7 +25,6 @@
 // 3rd party
 #include <blaze/math/Column.h>
 #include <blaze/math/DynamicMatrix.h>
-// #include <blaze/math/DynmaicVector.h>
 // stl
 #include <algorithm>
 #include <cassert>
