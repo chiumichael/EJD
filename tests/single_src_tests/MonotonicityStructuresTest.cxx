@@ -28,7 +28,6 @@
 using json = nlohmann::json;
 #include <fmt/format.h>
 #include <blaze/math/Column.h>
-#include <blaze/math/Row.h>
 namespace b = blaze;
 // std lib
 #include <chrono>
