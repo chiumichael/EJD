@@ -41,6 +41,7 @@ function(build_test SRC_FILE)
 				${Boost_LIBRARIES}
 				discreture::discreture
 				blaze::blaze
+				nlohmann_json::nlohmann_json
 	)
 	target_compile_options(
 		${target}

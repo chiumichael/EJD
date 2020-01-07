@@ -24,8 +24,19 @@
 #include "ExtremeMeasures.hpp"
 // 3rd party
 #include "gtest/gtest.h"
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+#include <fmt/format.h>
+#include <blaze/math/Column.h>
+#include <blaze/math/Row.h>
+namespace b = blaze;
 // std lib
+#include <chrono>
 #include <iostream>
+#include <filesystem>
+namespace fs = std::filesystem;
+#include <fstream>
+#include <sstream>
 
 TEST(MonotonicityStructure, SIZE_TEST_n_2) {
     auto size = ejd::monotoneStructSize(2);
@@ -83,23 +94,99 @@ TEST(MonotonicityStructure, SIZE_TEST_n_5) {
     );
 }
 
-TEST(MonotonicityStructure, 3d) {
-    auto b = ejd::constructMonotoneStructure(3);
+struct MonotoneStructTests : public ::testing::Test {
+    fs::path dataDir = fs::current_path() / "tests/data";
 
-    std::cout << b << std::endl;
+    void run(const int dim) {
+        auto b = ejd::constructMonotoneStructure(dim);
 
-    EXPECT_TRUE(true);
+        fs::path currPath = fs::current_path();
+
+        std::stringstream ss;
+        ss << "ms" << dim << ".json";
+
+        fs::path datapath = currPath / "tests/data" / ss.str();
+
+        if ( !fs::exists(datapath) ) {
+            ASSERT_FALSE(true) << "file does not exist";
+        }
+
+        std::ifstream f(datapath.c_str());
+
+        json julia_data;
+        f >> julia_data;
+
+        auto [m, n] = ejd::monotoneStructSize(dim);
+
+        for (size_t j = 0; j < n; ++j) {
+            auto col = b::column(b,j);
+            auto o = julia_data.at(j).get<std::vector<int>>();
+
+            for (size_t i = 0; i < m; ++i) {
+                if (col[i] != o[i]) {
+                    ASSERT_FALSE(true);
+                }
+            }
+        }
+        EXPECT_TRUE(true);
+    }
+};
+
+TEST_F(MonotoneStructTests, 3d) {
+    auto start = std::chrono::system_clock::now();
+    run(3);
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_secs = end-start;
+    fmt::print("Elapsed time: {}\n", elapsed_secs.count());
 }
 
-TEST(MonotonicityStructure, 4d) {
-    auto b = ejd::constructMonotoneStructure(4);
-
-    std::cout << b << std::endl;
-
-    EXPECT_TRUE(true);
+TEST_F(MonotoneStructTests, 4d) {
+    auto start = std::chrono::system_clock::now();
+    run(4);
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_secs = end-start;
+    fmt::print("Elapsed time: {}\n", elapsed_secs.count());
 }
 
-// test column extraction of ms
+TEST_F(MonotoneStructTests, 5d) {
+    auto start = std::chrono::system_clock::now();
+    run(5);
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_secs = end-start;
+    fmt::print("Elapsed time: {}\n", elapsed_secs.count());
+}
+
+TEST_F(MonotoneStructTests, 6d) {
+    auto start = std::chrono::system_clock::now();
+    run(6);
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_secs = end-start;
+    fmt::print("Elapsed time: {}\n", elapsed_secs.count());
+}
+
+TEST_F(MonotoneStructTests, 7d) {
+    auto start = std::chrono::system_clock::now();
+    run(7);
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_secs = end-start;
+    fmt::print("Elapsed time: {}\n", elapsed_secs.count());
+}
+
+TEST_F(MonotoneStructTests, 8d) {
+    auto start = std::chrono::system_clock::now();
+    run(8);
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_secs = end-start;
+    fmt::print("Elapsed time: {}\n", elapsed_secs.count());
+}
+
+TEST_F(MonotoneStructTests, 9d) {
+    auto start = std::chrono::system_clock::now();
+    run(9);
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_secs = end-start;
+    fmt::print("Elapsed time: {}\n", elapsed_secs.count());
+}
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);

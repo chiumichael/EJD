@@ -57,6 +57,7 @@ find_package(
 )
 find_package(fmt REQUIRED)
 find_package(blaze 3.6 REQUIRED)
+find_package(nlohmann_json 3.7.0 REQUIRED)
 
 include(GNUInstallDirs)
 
