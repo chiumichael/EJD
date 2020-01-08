@@ -2,7 +2,7 @@
 /*
     This file is part of EJD.
 
-    Copyright © 2019
+    Copyright © 2020
               Michael Chiu <chiu@cs.toronto.edu>
     
     Permission is hereby granted, free of charge, to any person obtaining a
