@@ -66,7 +66,8 @@ add_subdirectory(extern/discreture)
 ##
 ## OPTIONS
 ##
-option(EJD_TESTS "Build thes tests" ON)
+option(EJD_TESTS "Build tests" ON)
+option(EJD_BENCHMARKS "Build benchmarks" ON)
 option(USE_LD "Use LLD Linker" OFF)
 
 add_library(EJD SHARED)
@@ -105,8 +106,13 @@ endif()
 
 if(EJD_TESTS)
 	enable_testing()
-	add_subdirectory(tests)	
+	add_subdirectory(tests)
+endif()
+
+if(EJD_BENCHMARKS)
+	set(BENCHMARK_ENABLE_TESTING OFF)
+	set(BENCHMARK_ENABLE_GTEST_TESTS OFF)
+	add_subdirectory(benchmarks)
 endif()
 
 install(TARGETS EJD)
-
