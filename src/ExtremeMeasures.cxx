@@ -21,10 +21,10 @@
     DEALINGS IN THE SOFTWARE.
 */
 
-#include "Utils/AnsiColor.hpp"
-#include "Utils/Enumerate.hpp"
 #include "EmpiricalDistribution.hpp"
 #include "ExtremeMeasures.hpp"
+#include "Utils/AnsiColor.hpp"
+#include "Utils/Enumerate.hpp"
 #include "Utils/PrettyPrint.hpp"
 // 3rd party libs
 #include <blaze/math/Submatrix.h>
