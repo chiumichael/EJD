@@ -32,6 +32,6 @@ static void BM_ConstructMonotoneStructs(benchmark::State &state) {
 }
 
 // register function 
-BENCHMARK(BM_ConstructMonotoneStructs)->DenseRange(2,10,1);
+BENCHMARK(BM_ConstructMonotoneStructs)->DenseRange(2,20,1);
 
 BENCHMARK_MAIN();
