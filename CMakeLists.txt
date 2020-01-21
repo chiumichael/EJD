@@ -59,6 +59,15 @@ find_package(fmt REQUIRED)
 find_package(blaze 3.6 REQUIRED)
 find_package(nlohmann_json 3.7.0 REQUIRED)
 
+set(BENCHMARK_ENABLE_TESTING OFF)
+set(BENCHMARK_ENABLE_GTEST_TESTS OFF)
+
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+    set(CMAKE_CUDA_COMPILER_LAUNCHER "${CCACHE_PROGRAM}") # CMake 3.9+
+endif()
+
 include(GNUInstallDirs)
 
 add_subdirectory(extern/discreture)
