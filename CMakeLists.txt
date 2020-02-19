@@ -43,7 +43,7 @@ project(EJD
 		VERSION ${project_version}
 		DESCRIPTION ${project_description}
 		HOMEPAGE_URL ${project_homepage}
-		LANGUAGES CXX)
+		LANGUAGES C CXX)
 
 # LTO
 include(CheckIPOSupported)
@@ -52,9 +52,7 @@ check_ipo_supported(RESULT LTO_supported OUTPUT error)
 ##
 ## INCLUDE
 ##
-find_package(
-	Boost 1.67 REQUIRED COMPONENTS
-)
+find_package(Boost 1.67 REQUIRED COMPONENTS)
 find_package(fmt REQUIRED)
 find_package(blaze 3.6 REQUIRED)
 find_package(nlohmann_json 3.7.0 REQUIRED)
@@ -114,6 +112,11 @@ if(LTO_supported)
 endif()
 
 if(EJD_TESTS)
+	find_package(HighFive 2.1 REQUIRED)
+	target_link_libraries(
+		EJD
+		PRIVATE HighFive
+	)
 	enable_testing()
 	add_subdirectory(tests)
 endif()

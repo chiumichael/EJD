@@ -10,6 +10,7 @@ This library provides a C++ implementation of the Extreme Joint Distribution (EJ
 - [Discreture](https://github.com/mraggi/discreture)
 - [fmt](https://github.com/fmtlib/fmt)
 - ccache (optional)
+- [HighFive](https://github.com/BlueBrain/HighFive) (optional for testing---reading of .mat files)
 
 ### Build
 The usual CMake build procedure

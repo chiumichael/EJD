@@ -42,6 +42,7 @@ function(build_test SRC_FILE)
 				discreture::discreture
 				blaze::blaze
 				nlohmann_json::nlohmann_json
+				HighFive
 	)
 	target_compile_options(
 		${target}
