@@ -2,6 +2,8 @@
 
 This library provides a C++ implementation of the Extreme Joint Distribution (EJD) algorithm in [1].
 
+<img src="ejd3d.jpg" width="400"/><img src="ejd3d_2.jpg" width="400"/>
+
 ### Dependencies
 - CMake 3.15+
 - C++17
