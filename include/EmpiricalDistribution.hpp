@@ -138,6 +138,7 @@ auto construct_discrete_EmpDistr(const Distribution& distr, const int& support_e
 // TODO : does not take into account tolerance!
 struct EmpDistrArray
 {
+	EmpDistrArray() = default;
 	EmpDistrArray(const std::vector<EmpiricalDistribution> marginals)
 		: marginals(std::move(marginals))
 	{}
