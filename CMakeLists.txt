@@ -31,10 +31,11 @@ endif()
 ##
 ## GLOBAL VARIABLES
 ##
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_MODULE_PATH "/usr/local/share/cmake/Modules")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
 
 # set(CMAKE_PROJECT_INCLUDE_BEFORE "${CMAKE_CURRENT_LIST_DIR}/project-meta-info.in")
 include("${CMAKE_CURRENT_LIST_DIR}/project-meta-info.in")
@@ -52,10 +53,11 @@ check_ipo_supported(RESULT LTO_supported OUTPUT error)
 ##
 ## INCLUDE
 ##
-find_package(Boost 1.67 REQUIRED COMPONENTS)
+find_package(Boost 1.65 REQUIRED COMPONENTS)
 find_package(fmt REQUIRED)
 find_package(blaze 3.6 REQUIRED)
 find_package(nlohmann_json 3.7.0 REQUIRED)
+find_package(range-v3 REQUIRED)
 
 set(BENCHMARK_ENABLE_TESTING OFF)
 set(BENCHMARK_ENABLE_GTEST_TESTS OFF)
@@ -98,6 +100,7 @@ target_link_libraries(
 	PRIVATE fmt::fmt
 			discreture::discreture
 			blaze::blaze
+			range-v3::range-v3
 )
 
 # TODO: improve this
