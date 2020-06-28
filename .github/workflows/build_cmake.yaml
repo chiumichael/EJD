@@ -82,6 +82,14 @@ jobs:
           )
         endif()
 
+    - name:   Install Boost Ubuntu
+      id:     install_boost_ubuntu
+      if:     startsWith(matrix.config.os, 'ubuntu')
+      shell:  bash
+      working-directory: ${{ env.HOME }}
+      run: |
+        sudo apt-get install libboost-all-dev
+
     - name: Configure
       shell: cmake -P {0}
       run: |
