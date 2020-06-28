@@ -27,14 +27,16 @@ jobs:
             cc: "gcc", cxx: "g++"
           }
         - {
-            name: "Ubuntu Latest GCC", artifact: "Linux.tar.xz",
+            name: "Linux Clang 10", artifact: "Linux.tar.xz",
             os: ubuntu-latest,
-            cc: "gcc", cxx: "g++"
+            cc: "clang-10", cxx: "clang++-10"
+            cxx_stanard: 17
           }
         - {
             name: "macOS Latest Clang", artifact: "macOS.tar.xz",
             os: macos-latest,
             cc: "clang", cxx: "clang++"
+            cxx_stanard: 17
           }
 
     steps:
