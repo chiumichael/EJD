@@ -32,10 +32,11 @@ jobs:
             cc: "clang-10", cxx: "clang++-10",
             cxx_stanard: 17
           }
+          # AppleClang
         - {
             name: "macOS Latest Clang", artifact: "macOS.tar.xz",
             os: macos-latest,
-            cc: "clang", cxx: "clang++"
+            cc: "clang", cxx: "clang++",
             cxx_stanard: 17
           }
 
