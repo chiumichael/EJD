@@ -29,7 +29,7 @@ jobs:
         - {
             name: "Linux Clang 10", artifact: "Linux.tar.xz",
             os: ubuntu-latest,
-            cc: "clang-10", cxx: "clang++-10"
+            cc: "clang-10", cxx: "clang++-10",
             cxx_stanard: 17
           }
         - {
