@@ -109,6 +109,14 @@ jobs:
       run: |
         sudo apt-get install libboost-all-dev
 
+    - name:   Install fmt Ubuntu
+      id:     install_fmt_ubuntu
+      if:     startsWith(matrix.config.os, 'ubuntu')
+      shell:  bash
+      working-directory: ${{ env.HOME }}
+      run: |
+        sudo apt-get install libfmt-dev
+
     - name: Configure
       shell: cmake -P {0}
       run: |
