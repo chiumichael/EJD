@@ -147,7 +147,7 @@ jobs:
       shell:  bash
       working-directory: ${{ env.HOME }}
       run: |
-        brew install nlohmann_json
+        brew install nlohmann-json
       
     - name:   Install range-v3 macOS
       id:     install_range-v3_macos
@@ -156,6 +156,16 @@ jobs:
       working-directory: ${{ env.HOME }}
       run: |
         brew install range-v3  
+
+    - name:   Install blaze macOS
+      id:     install_blaze_macos
+      if:     startsWith(matrix.config.os, 'macOS')
+      shell:  bash
+      working-directory: ${{ env.HOME }}
+      run: |
+        git clone https://bitbucket.org/blaze-lib/blaze.git
+        cp -r ./blaze /usr/local/include
+
 
     - name: Configure
       shell: cmake -P {0}
