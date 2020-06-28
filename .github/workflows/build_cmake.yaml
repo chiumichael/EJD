@@ -135,6 +135,11 @@ jobs:
         endif()
         set(ENV{PATH} "$ENV{GITHUB_WORKSPACE}${path_separator}$ENV{PATH}")
 
+        if ("x${{ matrix.config.libcxx }}" STREQUAL "xtrue")
+          set(cxx_flags "${cxx_flags} -stdlib=libc++ -nostdinc++ -cxx-isystem $ENV{GITHUB_WORKSPACE}/llvm/include/c++/v1/ -Wno-unused-command-line-argument")
+          set(link_flags "${link_flags} -L $ENV{GITHUB_WORKSPACE}/llvm/lib -Wl,-rpath,$ENV{GITHUB_WORKSPACE}/llvm/lib -lc++abi")
+        endif()
+
         execute_process(
           COMMAND ${{ steps.cmake_and_ninja.outputs.cmake_dir }}/cmake
             -S .
