@@ -62,12 +62,6 @@ find_package(range-v3 REQUIRED)
 set(BENCHMARK_ENABLE_TESTING OFF)
 set(BENCHMARK_ENABLE_GTEST_TESTS OFF)
 
-find_program(CCACHE_PROGRAM ccache)
-if(CCACHE_PROGRAM)
-    set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
-    set(CMAKE_CUDA_COMPILER_LAUNCHER "${CCACHE_PROGRAM}") # CMake 3.9+
-endif()
-
 include(GNUInstallDirs)
 
 add_subdirectory(extern/discreture)
@@ -77,7 +71,16 @@ add_subdirectory(extern/discreture)
 ##
 option(EJD_TESTS "Build tests" ON)
 option(EJD_BENCHMARKS "Build benchmarks" ON)
-option(USE_LD "Use LLD Linker" OFF)
+# option(USE_LD "Use LLD Linker" ON)
+option(USE_CCACHE "Use ccache" OFF)
+
+if(USE_CCACHE)
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+    set(CMAKE_CUDA_COMPILER_LAUNCHER "${CCACHE_PROGRAM}") # CMake 3.9+
+endif()
+endif()
 
 add_library(EJD SHARED)
 
