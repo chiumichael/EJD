@@ -25,14 +25,14 @@ jobs:
             name: "Linux Clang 10", artifact: "Linux.tar.xz",
             os: ubuntu-latest,
             cc: "clang-10", cxx: "clang++-10",
-            cxx_stanard: 17
+            cxx_standard: 17
           }
           # AppleClang
         - {
             name: "macOS Latest Clang", artifact: "macOS.tar.xz",
             os: macos-latest,
             cc: "clang", cxx: "clang++",
-            cxx_stanard: 17
+            cxx_standard: 17
           }
 
     steps:
