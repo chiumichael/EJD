@@ -117,6 +117,22 @@ jobs:
       run: |
         sudo apt-get install libfmt-dev
 
+    - name:   Install homebrew macOS
+      id:     install_homebrew_macos
+      if:     startsWith(matrix.config.os, 'macOS')
+      shell:  bash
+      working-directory: ${{ env.HOME }}
+      run: |
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
+    - name:   Install Boost macOS
+      id:     install_boost_macos
+      if:     startsWith(matrix.config.os, 'macOS')
+      shell:  bash
+      working-directory: ${{ env.HOME }}
+      run: |
+        brew install boost
+
     - name: Configure
       shell: cmake -P {0}
       run: |
