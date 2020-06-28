@@ -80,6 +80,27 @@ jobs:
           )
         endif()
 
+    - name:   Install Clang 10
+      id:     install_clang_10
+      if:     startsWith(matrix.config.os, 'ubuntu') && ( matrix.config.cxx == 'clang++-10' )
+      shell:  bash
+      working-directory:  ${{ env.HOME }}
+      run: |
+        wget https://apt.llvm.org/llvm.sh
+        chmod +x llvm.sh
+        sudo ./llvm.sh 10
+
+    - name: Install libc++
+      id: install_libcxx
+      if: matrix.config.libcxx
+      shell: bash
+      working-directory: ${{ env.HOME }}
+      env:
+        CC: ${{ matrix.config.cc }}
+        CXX: ${{ matrix.config.cxx }}
+      run: |
+        $GITHUB_WORKSPACE/install_libcxx.sh
+
     - name:   Install Boost Ubuntu
       id:     install_boost_ubuntu
       if:     startsWith(matrix.config.os, 'ubuntu')
