@@ -44,7 +44,7 @@ project(EJD
 		VERSION ${project_version}
 		DESCRIPTION ${project_description}
 		HOMEPAGE_URL ${project_homepage}
-		LANGUAGES C CXX)
+		LANGUAGES CXX)
 
 # LTO
 include(CheckIPOSupported)
